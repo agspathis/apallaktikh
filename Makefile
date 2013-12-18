@@ -1,8 +1,10 @@
 CC=g++
 CFLAGS= -lGL -lGLU -lglut
 
-all: main visuals controls model texture
-	$(CC) main.o visuals.o controls.o model.o texture.o -o main $(CFLAGS)
+all: main visuals controls model texture intersection
+	$(CC) main.o visuals.o controls.o model.o\
+		  texture.o intersection.o\
+		  -o main $(CFLAGS)
 
 main: main.cpp
 	$(CC) -c main.cpp -o main.o $(CFLAGS)
@@ -18,6 +20,9 @@ model: model.cpp
 
 texture: texture.cpp
 	$(CC) -c texture.cpp -o texture.o $(CFLAGS)
+
+intersection: intersection.cpp
+	$(CC) -c intersection.cpp -o intersection.o $(CFLAGS)
 
 clean:
 	rm -rf *o main

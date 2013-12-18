@@ -1,3 +1,5 @@
+#include <vector>
+
 ////////////
 // vertex //
 ////////////
@@ -35,6 +37,36 @@ public:
 	k += v.k;
     };
 
+};
+
+// operator overloading
+
+// addition
+
+inline vector operator + (vector lv, const vector& rv)
+{
+    lv += rv;
+    return lv;
+}
+
+// dot product
+
+inline float operator * (const vector& lv, const vector& rv)
+{
+    float ip;
+    ip = lv.i * rv.i + lv.j * rv.j + lv.k * rv.k;
+    return ip;
+}
+
+// cross product
+
+inline vector operator % (const vector& u, const vector& v)
+{
+    vector cp;
+    cp.i = u.j * v.k - u.k * v.j;
+    cp.j = u.k * v.i - u.i * v.k;
+    cp.k = u.i * v.j - u.j * v.i;
+    return cp;
 };
 
 //////////
