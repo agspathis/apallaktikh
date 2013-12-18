@@ -1,8 +1,7 @@
 #include <vector>
 
-////////////
-// vertex //
-////////////
+
+// vertex
 
 class vertex {
 public:
@@ -14,9 +13,8 @@ public:
 };
 
 
-////////////
-// vector //
-////////////
+
+// vector
 
 class vector {
 public:
@@ -69,9 +67,8 @@ inline vector operator % (const vector& u, const vector& v)
     return cp;
 };
 
-//////////
-// face //
-//////////
+
+// face
 
 class face {
 public:
@@ -82,20 +79,34 @@ public:
 	face(int, int, int);
 };
 
-///////////
-// model //
-///////////
+
+// model
 
 class model {
+protected:
 	std::vector<vertex> vertices;
 	std::vector<face> faces;
 	std::vector<vector> vnormals;
 	std::vector<vector> fnormals;
+	vertex aabb_min, aabb_max;
 public:
 	model(const char*);
 	void center();
 	void face_normals();
 	void vertex_normals();
 	void draw(int);
+	void debug();
+};
+
+
+// voxel model
+
+class vmodel : public model {
+	float voxel_size;
+	int x, y, z;				// # of samples in dimension
+	std::vector<bool> voxels;
+public:
+	vmodel(model, int);
+	void draw();
 	void debug();
 };

@@ -14,7 +14,8 @@
 
 #define PI 3.14159
 
-// VERTEX
+
+// vertex
 
 vertex::vertex()
 {
@@ -31,7 +32,8 @@ vertex::vertex(float cx, float cy, float cz)
     z = cz;
 }
 
-// VECTOR
+
+// vector
 
 vector::vector()
 {
@@ -75,7 +77,8 @@ void vector::normalize()
     k /= magnitude;
 }
 
-// FACE
+
+// face
 
 face::face()
 {
@@ -93,13 +96,16 @@ face::face(int index_v1, int index_v2, int index_v3)
     iv3 = index_v3;
 }
 
-// MODEL
+
+// model
 
 // .obj file constructor
 
 model::model(const char* filename)
 {
     vertex v;
+	float x_min, y_min, z_min;
+	float x_max, y_max, z_max;
     int iv1, iv2, iv3;
     char line[128];
     FILE *objfile;
@@ -111,6 +117,13 @@ model::model(const char* filename)
 	case 'v':
 	    sscanf(&line[1],"%f %f %f", &v.x, &v.y, &v.z);
 	    vertices.push_back(v);
+		if (v.x < x_min) x_min = v.x;
+		if (v.y < y_min) y_min = v.y;
+		if (v.z < z_min) z_min = v.z;
+
+		if (v.x > x_min) x_min = v.x;
+		if (v.y > y_min) y_min = v.y;
+		if (v.z > z_min) z_min = v.z;
 	    break;
 	case 'f':
 	    sscanf(&line[1],"%d %d %d", &iv1, &iv2, &iv3);
@@ -124,6 +137,9 @@ model::model(const char* filename)
     fclose(objfile);
 	
     vnormals =  std::vector<vector> (vertices.size(), vector());
+
+	aabb_min = vertex(x_min, y_min, z_min);
+	aabb_max = vertex(x_max, y_max, z_max);
 }
 
 // face normal calculation
@@ -280,4 +296,26 @@ void model::center()
 	vertices[i].y -= cy;
 	vertices[i].z -= cz;
     }
+}
+
+
+// voxel model
+
+vmodel::vmodel(model m, int sampling_steps)
+{
+	// inherit structure from model
+	vertices = m.vertices;
+	faces = m.faces;
+	fnormals = m.fnormals;
+	vnormals = m.vnormals;
+	aabb_min = m.aabb_min;
+	aabb_max = m.aabb_max;
+
+	float ld; // longest dimension of aabb
+	vector aabb_diagonal = vector(aabb_min, aabb_max);
+	if (aabb_diagonal.i > aabb_diagonal.j) ld = aabb_diagonal.i;
+	else ld = aabb_diagonal.j;
+	if (ld < aabb_diagonal.k) ld = aabb_diagonal.k;
+
+	voxel_size = ld / sampling_steps;
 }
