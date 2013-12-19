@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "model.h"
+#include "intersection.h"
 
 #ifdef _WIN32
 #include "gl/glut.h"
@@ -301,21 +302,95 @@ void model::center()
 
 // voxel model
 
+char*** extract_voxels (model m, float voxel_size, int x, int y, int z)
+{
+	char*** voxels = (char***) malloc (x*y*z);
+	char*** voxel_vertices = (char***) malloc ((x+1)*(y+1)*(z+1));
+
+	std::vector<face> faces = m.faces;
+	std::vector<vertex> vertices = m.vertices;
+
+	vertex origin, v1, v2, v3;
+	vector dir = vector(1, 1, 1);
+	face triangle;
+	float tf;
+
+	for (int f = 0; f < faces.size(); f++) {
+		triangle = faces[f];
+		v1 = vertices[triangle.iv1];
+		v2 = vertices[triangle.iv2];
+		v3 = vertices[triangle.iv3];
+		for (int i = 0; i < x+1; i++) {
+			origin.x = i * voxel_size;
+			for (int j = 0; i < y+1; j++) {
+				origin.y = j * voxel_size;
+				for (int k = 0; k < z+1; k++) {
+					origin.z = k * voxel_size;
+					if (triangle_intersection (v1, v2, v3,
+											   origin, dir,
+											   &tf))
+						voxel_vertices[i][j][k] = 1;
+					else voxel_vertices[i][j][k] = 0;
+				}
+			}
+		}
+	}
+	
+	for (int i = 0; i < x; i++) {
+		for (int j = 0; i < y; j++) {
+			for (int k = 0; k < z; k++) {
+				voxels[i][j][k] =
+					(voxel_vertices[i+0][j+0][k+0] << 0) +
+					(voxel_vertices[i+0][j+0][k+1] << 1) +
+					(voxel_vertices[i+0][j+1][k+0] << 2) +
+					(voxel_vertices[i+0][j+1][k+1] << 3) +
+					(voxel_vertices[i+1][j+0][k+0] << 4) +
+					(voxel_vertices[i+1][j+0][k+1] << 5) +
+					(voxel_vertices[i+1][j+1][k+0] << 6) +
+					(voxel_vertices[i+1][j+1][k+1] << 7);
+			}
+		}
+	}
+
+	free(voxel_vertices);
+	return voxels;
+}
+
 vmodel::vmodel(model m, int sampling_steps)
 {
-	// inherit structure from model
-	vertices = m.vertices;
-	faces = m.faces;
-	fnormals = m.fnormals;
-	vnormals = m.vnormals;
-	aabb_min = m.aabb_min;
-	aabb_max = m.aabb_max;
-
 	float ld; // longest dimension of aabb
-	vector aabb_diagonal = vector(aabb_min, aabb_max);
+	vector aabb_diagonal = vector(m.aabb_min, m.aabb_max);
 	if (aabb_diagonal.i > aabb_diagonal.j) ld = aabb_diagonal.i;
 	else ld = aabb_diagonal.j;
 	if (ld < aabb_diagonal.k) ld = aabb_diagonal.k;
 
 	voxel_size = ld / sampling_steps;
+	
+	x = (int) aabb_diagonal.i / voxel_size;
+	y = (int) aabb_diagonal.j / voxel_size;
+	z = (int) aabb_diagonal.k / voxel_size;
+
+	voxels = extract_voxels(m, voxel_size, x, y, z);
 }
+
+void vmodel::draw()
+{
+	glColor3f(0.5, 0.2, 0.6);
+	glBegin(GL_LINES);
+	for (int i = 0; i < x; i++) {
+		for (int j = 0; i < y; j++) {
+			for (int k = 0; k < z; k++) {
+				if (voxels[i][j][k] != 0) {
+					glPushMatrix();
+					glTranslatef((i+0.5)*voxel_size,
+								 (j+0.5)*voxel_size,
+								 (k+0.5)*voxel_size);
+					glutSolidSphere(voxel_size, 10, 10);
+					glPopMatrix();
+				}
+			}
+		}
+	}
+	glEnd();
+}
+					

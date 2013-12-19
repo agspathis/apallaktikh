@@ -18,6 +18,7 @@
 #endif
 
 std::vector<model> models;
+std::vector<vmodel> vmodels;
 
 void apply_rt(struct rt rt)
 {
@@ -37,7 +38,8 @@ void render()
 	glLoadIdentity();
 	apply_rt(rt);
 
-	models[0].draw(mode);
+	// models[0].draw(mode);
+	vmodels[0].draw();
 
 	glutSwapBuffers(); // All drawing commands applied to the hidden
 					   // buffer, so now, bring forward the hidden
@@ -60,7 +62,7 @@ void resize(int w, int h)
 	gluPerspective(30.0, (float(w)/h), 1.0, 1000);
 
 	//gluLookAt(20, 100, 0, 0, 0, 0, 0, 0, 1);
-	gluLookAt(0, 0, -50, 0, 0, 0, 0, 1, 0);
+	gluLookAt(0, 0, -30, 0, 0, 0, 0, 1, 0);
 	// gluLookAt(0, 0, -200, 0, 0, 0, 0, 1, 0);
 }
 
@@ -71,7 +73,7 @@ void idle()
 
 void setup()
 {
-
+	// read models
 	models.push_back(model("models/b406_low.obj"));
 
 	for (int i = 0; i < models.size(); i++) {
@@ -80,6 +82,9 @@ void setup()
 	}
 
 	models[0].center();
+
+	// extract voxel models
+	vmodels.push_back(vmodel(models[0], 3));
 
 	//Parameter handling
 	glShadeModel (GL_SMOOTH);

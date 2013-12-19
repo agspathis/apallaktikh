@@ -3,4 +3,4 @@ int triangle_intersection(const vertex v1,   // triangle vertices
                           const vertex v3,
                           const vertex  o,   // ray origin
                           const vector  d,   // ray direction
-						  float*        out)
+						  float*        out);

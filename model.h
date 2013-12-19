@@ -83,7 +83,7 @@ public:
 // model
 
 class model {
-protected:
+public:
 	std::vector<vertex> vertices;
 	std::vector<face> faces;
 	std::vector<vector> vnormals;
@@ -101,10 +101,10 @@ public:
 
 // voxel model
 
-class vmodel : public model {
+class vmodel {
 	float voxel_size;
-	int x, y, z;				// # of samples in dimension
-	std::vector<bool> voxels;
+	int x, y, z; // # of samples in each dimension
+	char*** voxels;
 public:
 	vmodel(model, int);
 	void draw();
