@@ -14,8 +14,6 @@
 #include <GL/glut.h>
 #endif
 
-#define PI 3.14159
-
 // voxel model
 
 vmodel::vmodel(model m, int sampling_steps)
@@ -33,12 +31,6 @@ vmodel::vmodel(model m, int sampling_steps)
 
 	// voxel size determination
 	vsize = ld / sampling_steps;
-
-	printf("vmodel x:%f y:%f z:%f vs:%f \n",
-		   aabb_diagonal.i,
-		   aabb_diagonal.j,
-		   aabb_diagonal.k,
-		   vsize);
 
 	x = (int) ceil(aabb_diagonal.i / vsize);
 	y = (int) ceil(aabb_diagonal.j / vsize);
@@ -75,8 +67,6 @@ vmodel::vmodel(model m, int sampling_steps)
 	// placeholder for each intersection coordinates
 	float tf;
 
-	printf("vmodel faces: %d\n", faces.size());
-
 	for (int f = 0; f < faces.size(); f++) {
 		triangle = faces[f];
 		v1 = vertices[triangle.iv1];
@@ -96,18 +86,7 @@ vmodel::vmodel(model m, int sampling_steps)
 				}
 			}
 		}
-		printf("done %f\%\n", ((float) f * 100) / faces.size());
 	}
-
-	printf("check voxels\n");
-	for (int i = 0; i < x; i++) {
-		for (int j = 0; j < y; j++) {
-			for (int k = 0; k < z; k++) {
-				printf("%d ", voxels[i][j][k]);
-			}
-		}
-	}
-	printf("\n");
 }
 
 void vmodel::draw()

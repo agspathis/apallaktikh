@@ -39,7 +39,7 @@ void render()
 	glLoadIdentity();
 	apply_rt(rt);
 
-	// models[0].draw(mode);
+	models[0].draw(mode);
 	vmodels[0].draw();
 
 	glutSwapBuffers(); // All drawing commands applied to the hidden
@@ -85,7 +85,7 @@ void setup()
 	models[0].center();
 
 	// extract voxel models
-	vmodels.push_back(vmodel(models[0], 30));
+	vmodels.push_back(vmodel(models[0], VOXEL_RESOLUTION));
 	
 	//Parameter handling
 	glShadeModel (GL_SMOOTH);

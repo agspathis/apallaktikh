@@ -1,3 +1,5 @@
+#define VOXEL_RESOLUTION 20
+
 // voxel model
 
 class vmodel {
