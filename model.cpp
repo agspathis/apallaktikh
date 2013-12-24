@@ -122,9 +122,9 @@ model::model(const char* filename)
 		if (v.y < y_min) y_min = v.y;
 		if (v.z < z_min) z_min = v.z;
 
-		if (v.x > x_min) x_min = v.x;
-		if (v.y > y_min) y_min = v.y;
-		if (v.z > z_min) z_min = v.z;
+		if (v.x > x_max) x_max = v.x;
+		if (v.y > y_max) y_max = v.y;
+		if (v.z > z_max) z_max = v.z;
 	    break;
 	case 'f':
 	    sscanf(&line[1],"%d %d %d", &iv1, &iv2, &iv3);
@@ -297,100 +297,42 @@ void model::center()
 	vertices[i].y -= cy;
 	vertices[i].z -= cz;
     }
+
+	aabb_min.x -= cx;
+	aabb_min.y -= cy;
+	aabb_min.z -= cz;
+
+	aabb_max.x -= cx;
+	aabb_max.y -= cy;
+	aabb_max.z -= cz;
 }
 
+// varray
 
-// voxel model
+// int varray::index(int i, int j, int k)
+// {
+// 	return (i*y*z + z*j + k);
+// }
 
-char*** extract_voxels (model m, float voxel_size, int x, int y, int z)
-{
-	char*** voxels = (char***) malloc (x*y*z);
-	char*** voxel_vertices = (char***) malloc ((x+1)*(y+1)*(z+1));
+// char varray::get(int i, int j, int k)
+// {
+// 	return array[i*y*z + z*j + k];
+// }
+// void varray::flip(int i, int j, int k)
+// {
+// 	int index = i*y*z + z*j + k;
+// 	if (array[index] == 1) array[index] = 0;
+// 	else array[index] = 1;
+// }
 
-	std::vector<face> faces = m.faces;
-	std::vector<vertex> vertices = m.vertices;
+// varray::varray(int x_dim, int y_dim, int z_dim)
+// {
+// 	x = x_dim; y = y_dim; z = z_dim;
+// 	array = std::vector<char> (x*y*z, 0);
+// }
 
-	vertex origin, v1, v2, v3;
-	vector dir = vector(1, 1, 1);
-	face triangle;
-	float tf;
-
-	for (int f = 0; f < faces.size(); f++) {
-		triangle = faces[f];
-		v1 = vertices[triangle.iv1];
-		v2 = vertices[triangle.iv2];
-		v3 = vertices[triangle.iv3];
-		for (int i = 0; i < x+1; i++) {
-			origin.x = i * voxel_size;
-			for (int j = 0; i < y+1; j++) {
-				origin.y = j * voxel_size;
-				for (int k = 0; k < z+1; k++) {
-					origin.z = k * voxel_size;
-					if (triangle_intersection (v1, v2, v3,
-											   origin, dir,
-											   &tf))
-						voxel_vertices[i][j][k] = 1;
-					else voxel_vertices[i][j][k] = 0;
-				}
-			}
-		}
-	}
-	
-	for (int i = 0; i < x; i++) {
-		for (int j = 0; i < y; j++) {
-			for (int k = 0; k < z; k++) {
-				voxels[i][j][k] =
-					(voxel_vertices[i+0][j+0][k+0] << 0) +
-					(voxel_vertices[i+0][j+0][k+1] << 1) +
-					(voxel_vertices[i+0][j+1][k+0] << 2) +
-					(voxel_vertices[i+0][j+1][k+1] << 3) +
-					(voxel_vertices[i+1][j+0][k+0] << 4) +
-					(voxel_vertices[i+1][j+0][k+1] << 5) +
-					(voxel_vertices[i+1][j+1][k+0] << 6) +
-					(voxel_vertices[i+1][j+1][k+1] << 7);
-			}
-		}
-	}
-
-	free(voxel_vertices);
-	return voxels;
-}
-
-vmodel::vmodel(model m, int sampling_steps)
-{
-	float ld; // longest dimension of aabb
-	vector aabb_diagonal = vector(m.aabb_min, m.aabb_max);
-	if (aabb_diagonal.i > aabb_diagonal.j) ld = aabb_diagonal.i;
-	else ld = aabb_diagonal.j;
-	if (ld < aabb_diagonal.k) ld = aabb_diagonal.k;
-
-	voxel_size = ld / sampling_steps;
-	
-	x = (int) aabb_diagonal.i / voxel_size;
-	y = (int) aabb_diagonal.j / voxel_size;
-	z = (int) aabb_diagonal.k / voxel_size;
-
-	voxels = extract_voxels(m, voxel_size, x, y, z);
-}
-
-void vmodel::draw()
-{
-	glColor3f(0.5, 0.2, 0.6);
-	glBegin(GL_LINES);
-	for (int i = 0; i < x; i++) {
-		for (int j = 0; i < y; j++) {
-			for (int k = 0; k < z; k++) {
-				if (voxels[i][j][k] != 0) {
-					glPushMatrix();
-					glTranslatef((i+0.5)*voxel_size,
-								 (j+0.5)*voxel_size,
-								 (k+0.5)*voxel_size);
-					glutSolidSphere(voxel_size, 10, 10);
-					glPopMatrix();
-				}
-			}
-		}
-	}
-	glEnd();
-}
-					
+// varray::varray()
+// {
+// 	x = 1; y = 1; z = 1;
+// 	array = std::vector<char> (1, 0);
+// }

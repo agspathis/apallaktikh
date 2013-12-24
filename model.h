@@ -10,6 +10,12 @@ public:
 public:
     vertex();
     vertex(float, float, float);
+	inline vertex operator -= (vertex v)
+    {
+	x -= v.x;
+	y -= v.y;
+	z -= v.z;
+    };
 };
 
 
@@ -98,15 +104,17 @@ public:
 	void debug();
 };
 
+// voxel array
 
-// voxel model
+/* class varray { */
+/* public: */
+/* 	std::vector<char> array; */
+/* 	int x, y, z; // dimensions */
+/* public: */
+/* 	varray(); */
+/* 	varray(int, int, int); */
+/* 	int index(int, int, int); */
+/* 	char get(int, int, int); */
+/* 	void flip(int, int, int); */
+/* }; */
 
-class vmodel {
-	float voxel_size;
-	int x, y, z; // # of samples in each dimension
-	char*** voxels;
-public:
-	vmodel(model, int);
-	void draw();
-	void debug();
-};

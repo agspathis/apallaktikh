@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "model.h"
+#include "vmodel.h"
 #include "visuals.h"
 #include "controls.h"
 #include "texture.h"
@@ -84,8 +85,8 @@ void setup()
 	models[0].center();
 
 	// extract voxel models
-	vmodels.push_back(vmodel(models[0], 3));
-
+	vmodels.push_back(vmodel(models[0], 30));
+	
 	//Parameter handling
 	glShadeModel (GL_SMOOTH);
 

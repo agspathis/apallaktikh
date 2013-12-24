@@ -1,15 +1,15 @@
 #include "model.h"
 
-#define EPSILON 0.000001
+#define EPSILON 0.0001
 
 // ray-triangle intersection predicate (Möller–Trumbore algorithm)
  
-int triangle_intersection(const vertex v1,   // triangle vertices
-                          const vertex v2,
-                          const vertex v3,
-                          const vertex  o,   // ray origin
-                          const vector  d,   // ray direction
-						  float*        out)
+int ray_triangle(const vertex v1,   // triangle vertices
+				 const vertex v2,
+				 const vertex v3,
+				 const vertex  o,   // ray origin
+				 const vector  d,   // ray direction
+				 float*        out)
 {
 	vector e1, e2, p, q, t;
 	float det, inv_det, u, v, tf;

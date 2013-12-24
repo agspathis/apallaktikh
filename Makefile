@@ -1,27 +1,31 @@
 CC=g++
 CFLAGS= -lGL -lGLU -lglut
 
-all: main visuals controls model texture intersection
+all: main.o visuals.o controls.o model.o\
+	 vmodel.o texture.o intersection.o
 	$(CC) main.o visuals.o controls.o model.o\
-		  texture.o intersection.o\
+		  vmodel.o texture.o intersection.o\
 		  -o main $(CFLAGS)
 
-main: main.cpp
+main.o: main.cpp
 	$(CC) -c main.cpp -o main.o $(CFLAGS)
 
-visuals: visuals.cpp
+visuals.o: visuals.cpp
 	$(CC) -c visuals.cpp -o visuals.o $(CFLAGS)
 
-controls: controls.cpp
+controls.o: controls.cpp
 	$(CC) -c controls.cpp -o controls.o $(CFLAGS)
 
-model: model.cpp
+model.o: model.cpp
 	$(CC) -c model.cpp -o model.o $(CFLAGS)
 
-texture: texture.cpp
+vmodel.o: vmodel.cpp
+	$(CC) -c vmodel.cpp -o vmodel.o $(CFLAGS)
+
+texture.o: texture.cpp
 	$(CC) -c texture.cpp -o texture.o $(CFLAGS)
 
-intersection: intersection.cpp
+intersection.o: intersection.cpp
 	$(CC) -c intersection.cpp -o intersection.o $(CFLAGS)
 
 clean:
