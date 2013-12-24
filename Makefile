@@ -10,7 +10,7 @@ all: main.o visuals.o controls.o model.o\
 main.o: main.cpp
 	$(CC) -c main.cpp -o main.o $(CFLAGS)
 
-visuals.o: visuals.cpp
+visuals.o: visuals.cpp vmodel.h
 	$(CC) -c visuals.cpp -o visuals.o $(CFLAGS)
 
 controls.o: controls.cpp

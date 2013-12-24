@@ -36,7 +36,7 @@ vmodel::vmodel(model m, int sampling_steps)
 	y = (int) ceil(aabb_diagonal.j / vsize);
 	z = (int) ceil(aabb_diagonal.k / vsize);
 
-	printf("vmodel x:%d y:%d z:%d \n", x, y, z);
+	printf("vmodel x:%d y:%d z:%d, total:%d \n", x, y, z, x*y*z);
 
 	// allocate and clear voxels
 	voxels = (char***) malloc (x*sizeof(char**));
