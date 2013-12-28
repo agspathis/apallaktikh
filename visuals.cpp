@@ -40,7 +40,7 @@ void render()
 	apply_rt(rt);
 
 	models[0].draw(mode);
-	//vmodels[0].draw();
+	// vmodels[0].draw();
 
 	glutSwapBuffers(); // All drawing commands applied to the hidden
 					   // buffer, so now, bring forward the hidden
@@ -80,6 +80,7 @@ void setup()
 	// extract voxel models
 	vmodels.push_back(vmodel(models[0], VOXEL_RESOLUTION));
 
+	// model replacement with reconstructed surface from voxel model
 	models[0] = model(vmodels[0]);
 	
 	glShadeModel (GL_SMOOTH);

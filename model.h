@@ -77,7 +77,7 @@ inline vector operator % (const vector& u, const vector& v)
 
 class face {
 public:
-	int vi1, vi2, vi3;
+	int vi0, vi1, vi2;
 	vector n;
 public:
 	face();
@@ -102,6 +102,7 @@ public:
 	void center();
 	void face_normals();
 	void vertex_normals();
+	void compact();
 	void draw(int);
 	void debug();
 };

@@ -21,17 +21,17 @@
 
 vertex::vertex()
 {
-    x = 0;
-    y = 0;
-    z = 0;
+	x = 0;
+	y = 0;
+	z = 0;
 }
 
 // coordinate constructor
 vertex::vertex(float cx, float cy, float cz)
 {
-    x = cx;
-    y = cy;
-    z = cz;
+	x = cx;
+	y = cy;
+	z = cz;
 }
 
 
@@ -39,44 +39,44 @@ vertex::vertex(float cx, float cy, float cz)
 
 vector::vector()
 {
-    i = 0;
-    j = 0;
-    k = 0;
+	i = 0;
+	j = 0;
+	k = 0;
 };
 
 // coordinate constructor
 vector::vector(float ci, float cj, float ck)
 {
-    i = ci;
-    j = cj;
-    k = ck;
+	i = ci;
+	j = cj;
+	k = ck;
 }
 
 vector::vector(vertex start, vertex end)
 {
-    i = end.x - start.x;
-    j = end.y - start.y;
-    k = end.z - start.z;
+	i = end.x - start.x;
+	j = end.y - start.y;
+	k = end.z - start.z;
 };
 
 void vector::vector_print()
 {
-    printf("%f %f %f\n", i, j, k);
+	printf("%f %f %f\n", i, j, k);
 }
 
 void vector::flip()
 {
-    i = -i;
-    j = -j;
-    k = -k;
+	i = -i;
+	j = -j;
+	k = -k;
 }
 
 void vector::normalize()
 {
-    float magnitude = sqrt(i*i + j*j + k*k);
-    i /= magnitude;
-    j /= magnitude;
-    k /= magnitude;
+	float magnitude = sqrt(i*i + j*j + k*k);
+	i /= magnitude;
+	j /= magnitude;
+	k /= magnitude;
 }
 
 
@@ -84,18 +84,18 @@ void vector::normalize()
 
 face::face()
 {
-    vi1 = 0;
-    vi2 = 0;
-    vi3 = 0;
+	vi0 = 0;
+	vi1 = 0;
+	vi2 = 0;
 }
 
 // vertex inidices constructor
 
-face::face(int vertex_i1, int vertex_i2, int vertex_i3)
+face::face(int vertex_i0, int vertex_i1, int vertex_i2)
 {
-    vi1 = vertex_i1;
-    vi2 = vertex_i2;
-    vi3 = vertex_i3;
+	vi0 = vertex_i0;
+	vi1 = vertex_i1;
+	vi2 = vertex_i2;
 }
 
 
@@ -105,161 +105,199 @@ face::face(int vertex_i1, int vertex_i2, int vertex_i3)
 
 model::model(const char* filename)
 {
-    vertex v;
+	vertex v;
 	float x_min, y_min, z_min;
 	float x_max, y_max, z_max;
-    int vi1, vi2, vi3;
-    char line[128];
-    FILE *objfile;
-
-    if (!(objfile = fopen(filename, "rt"))) return;
-
-    while (fgets(line, 128, objfile)) {
-	switch (line[0]) {
-	case 'v':
-	    sscanf(&line[1],"%f %f %f", &v.x, &v.y, &v.z);
-	    vertices.push_back(v);
-		if (v.x < x_min) x_min = v.x;
-		if (v.y < y_min) y_min = v.y;
-		if (v.z < z_min) z_min = v.z;
-
-		if (v.x > x_max) x_max = v.x;
-		if (v.y > y_max) y_max = v.y;
-		if (v.z > z_max) z_max = v.z;
-	    break;
-	case 'f':
-	    sscanf(&line[1],"%d %d %d", &vi1, &vi2, &vi3);
-	    faces.push_back(face(--vi1, --vi3, --vi2));
-	    break;
-	default:
-	    continue;
-	};
-    }
-    fclose(objfile);
+	int vi0, vi1, vi2;
+	char line[128];
+	FILE *objfile;
 	
-    vnormals =  std::vector<vector> (vertices.size(), vector());
+	if (!(objfile = fopen(filename, "rt"))) return;
 
+	while (fgets(line, 128, objfile)) {
+		switch (line[0]) {
+		case 'v':
+			sscanf(&line[1],"%f %f %f", &v.x, &v.y, &v.z);
+			vertices.push_back(v);
+			if (v.x < x_min) x_min = v.x;
+			if (v.y < y_min) y_min = v.y;
+			if (v.z < z_min) z_min = v.z;
+			
+			if (v.x > x_max) x_max = v.x;
+			if (v.y > y_max) y_max = v.y;
+			if (v.z > z_max) z_max = v.z;
+			break;
+		case 'f':
+			sscanf(&line[1],"%d %d %d", &vi0, &vi1, &vi2);
+			faces.push_back(face(--vi0, --vi2, --vi1));
+			break;
+		default:
+			continue;
+		};
+	}
+	fclose(objfile);
+	
 	aabb_min = vertex(x_min, y_min, z_min);
 	aabb_max = vertex(x_max, y_max, z_max);
-
-	this->center();
+	
 	this->face_normals();
 	this->vertex_normals();
+	this->center();
 }
 
 // face normal calculation
 void model::face_normals()
 {
-    face f;
-    vector fn;
-    for (int i = 0; i < faces.size(); i++) {
-	f = faces[i];
-	fn = vector(vertices[f.vi1], vertices[f.vi2])
-	    % vector(vertices[f.vi1], vertices[f.vi3]);
-	fn.normalize();
-	fnormals.push_back(fn);
-    }
+	face f;
+	vector fn;
+
+	for (int i = 0; i < faces.size(); i++) {
+		f = faces[i];
+		fn = vector(vertices[f.vi0], vertices[f.vi1])
+			% vector(vertices[f.vi0], vertices[f.vi2]);
+		fn.normalize();
+		fnormals.push_back(fn);
+	}
 }
 
 // vertex normal calculation
 void model::vertex_normals()
 {
-    face f;
-    vector fn;
-    for (int i = 0; i < faces.size(); i++) {
-    	f = faces[i];
-    	fn = fnormals[i];
-    	vnormals[f.vi1] += fn;
-    	vnormals[f.vi2] += fn;
-    	vnormals[f.vi3] += fn;
-    }
+	face f;
+	vector fn;
+	vnormals = std::vector<vector> (vertices.size(), vector());
 
-    for (int i = 0; i < vnormals.size(); i++) {
-    	vnormals[i].normalize();
-    }
+	// vnormals.resize(vertices.size(), vector());
+	for (int i = 0; i < faces.size(); i++) {
+		f = faces[i];
+		fn = fnormals[i];
+		vnormals[f.vi0] += fn;
+		vnormals[f.vi1] += fn;
+		vnormals[f.vi2] += fn;
+	}
 
+	for (int i = 0; i < vnormals.size(); i++) {
+		vnormals[i].normalize();
+	}
+
+}
+
+void model::center()
+{
+	vertex v;
+	float cx, cy, cz;
+	float dx, dy, dz;
+	float sum_x, sum_y, sum_z;
+	for (int i=0; i<vertices.size(); i++) {
+	v = vertices[i];
+	sum_x += v.x;
+	sum_y += v.y;
+	sum_z += v.z;
+	}
+	cx = sum_x / vertices.size();
+	cy = sum_y / vertices.size();
+	cz = sum_z / vertices.size();
+
+	for (int i=0; i<vertices.size(); i++) {
+	vertices[i].x -= cx;
+	vertices[i].y -= cy;
+	vertices[i].z -= cz;
+	}
+
+	aabb_min.x -= cx;
+	aabb_min.y -= cy;
+	aabb_min.z -= cz;
+
+	aabb_max.x -= cx;
+	aabb_max.y -= cy;
+	aabb_max.z -= cz;
 }
 
 // debugging method
 void model::debug()
 {
-    printf("%d\n", vertices.size());
-    printf("%f %f %f\n", vertices[4].x, vertices[4].y, vertices[4].z);
-    printf("%d %d %d\n", faces[4].vi1, faces[4].vi2, faces[4].vi3);
-    printf("%f %f %f\n", fnormals[4].i, fnormals[4].j, fnormals[4].k);
-    printf("%f %f %f\n", vnormals[4].i, vnormals[4].j, vnormals[4].k);
+	printf("%d\n", vertices.size());
+	printf("%f %f %f\n", vertices[4].x, vertices[4].y, vertices[4].z);
+	printf("%d %d %d\n", faces[4].vi0, faces[4].vi1, faces[4].vi2);
+	printf("%f %f %f\n", fnormals[4].i, fnormals[4].j, fnormals[4].k);
+	printf("%f %f %f\n", vnormals[4].i, vnormals[4].j, vnormals[4].k);
 
-    vector v1, v2, v3, v4;
-    v1 = vector(1, 4, 3);
-    v2 = vector(3, -2, 2);
-    v3 = v1 % v2;
-    v4 = v2 % v1;
-    v1.vector_print();
-    v2.vector_print();
-    v3.vector_print();
-    v4.vector_print();
+	vector v0, v1, v2, v3;
+	v0 = vector(1, 4, 3);
+	v1 = vector(3, -2, 2);
+	v2 = v1 % v2;
+	v3 = v2 % v1;
+	v0.vector_print();
+	v1.vector_print();
+	v2.vector_print();
+	v3.vector_print();
 
-    for (int i = 0; i < vnormals.size(); i++) {
-    	vnormals[i].vector_print();
-    }
+	for (int i = 0; i < vnormals.size(); i++) {
+		vnormals[i].vector_print();
+	}
 }
 
 // set material properties from coordinates of v
 void set_coordinate_material(float x, float y, float z)
 {
-    float r = x*x + y*y + z*z;
+	float r = x*x + y*y + z*z;
 
-    GLfloat specref[4];
+	GLfloat specref[4];
 
-    specref[0] = x/r; specref[1] = y/r;
-    specref[2] = z/r; specref[3] = 0.2;
-    glMaterialfv(GL_FRONT,GL_AMBIENT,specref);
+	specref[0] = x/r; specref[1] = y/r;
+	specref[2] = z/r; specref[3] = 0.2;
+	glMaterialfv(GL_FRONT,GL_AMBIENT,specref);
 
-    specref[0] = z/r; specref[1] = x/r;
-    specref[2] = y/r; specref[3] = 0.5;
-    glMaterialfv(GL_FRONT,GL_DIFFUSE,specref);
+	specref[0] = z/r; specref[1] = x/r;
+	specref[2] = y/r; specref[3] = 0.5;
+	glMaterialfv(GL_FRONT,GL_DIFFUSE,specref);
 
-    specref[0] = y/r; specref[1] = z/r;
-    specref[2] = x/r; specref[3] = 0.5;
-    glMaterialfv(GL_FRONT,GL_SPECULAR,specref);
+	specref[0] = y/r; specref[1] = z/r;
+	specref[2] = x/r; specref[3] = 0.5;
+	glMaterialfv(GL_FRONT,GL_SPECULAR,specref);
 
-    glMaterialf(GL_FRONT,GL_SHININESS, r);
+	glMaterialf(GL_FRONT,GL_SHININESS, r);
 }
 
 // set texture coordinates from coordinates of v (spherical mapping)
 void spherical_map_texture(float x, float y, float z)
 {
-    float theta, phi, r, u, v;
-    int repeat_count = 2;
-    theta = atan2(x, z);
-    phi = atan2(y, sqrt(x*x+z*z));
-    r = sqrt(x*x + y*y + z*z);
-    u = (theta + PI) / (2 * PI);
-    v = (phi + PI/2) / PI;
-    glTexCoord2d(repeat_count * u, repeat_count * v);
+	float theta, phi, r, u, v;
+	int repeat_count = 2;
+	theta = atan2(x, z);
+	phi = atan2(y, sqrt(x*x+z*z));
+	r = sqrt(x*x + y*y + z*z);
+	u = (theta + PI) / (2 * PI);
+	v = (phi + PI/2) / PI;
+	glTexCoord2d(repeat_count * u, repeat_count * v);
 }
 
 void model::draw(int mode)
 {
-    face f = face(0, 0, 0);
-    vertex v1, v2, v3;
-    vector vn1, vn2, vn3;
+	face f = face(0, 0, 0);
+	vertex v0, v1, v2;
+	vector vn0, vn1, vn2;
 
-    if (mode) glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
-    else glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-    
-    glBegin(GL_TRIANGLES);
+	if (mode) glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+	else glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
 
-    for (int i=0; i<faces.size(); i++) {
+	glBegin(GL_TRIANGLES);
+
+	for (int i=0; i<faces.size(); i++) {
 	f = faces[i];
 
+	v0 = vertices[f.vi0];
 	v1 = vertices[f.vi1];
 	v2 = vertices[f.vi2];
-	v3 = vertices[f.vi3];
 
+	vn0 = vnormals[f.vi0];
 	vn1 = vnormals[f.vi1];
 	vn2 = vnormals[f.vi2];
-	vn3 = vnormals[f.vi3];
+
+	glNormal3f(vn0.i, vn0.j, vn0.k);
+	set_coordinate_material(v0.x, v0.y, v0.z);
+	spherical_map_texture(v0.x, v0.y, v0.z);
+	glVertex3f(v0.x, v0.y, v0.z);
 
 	glNormal3f(vn1.i, vn1.j, vn1.k);
 	set_coordinate_material(v1.x, v1.y, v1.z);
@@ -271,67 +309,54 @@ void model::draw(int mode)
 	spherical_map_texture(v2.x, v2.y, v2.z);
 	glVertex3f(v2.x, v2.y, v2.z);
 
-	glNormal3f(vn3.i, vn3.j, vn3.k);
-	set_coordinate_material(v3.x, v3.y, v3.z);
-	spherical_map_texture(v3.x, v3.y, v3.z);
-	glVertex3f(v3.x, v3.y, v3.z);
-
-    }
-    glEnd();
-
-	// axes for debugging
-
-	// glPushMatrix();
-	// glTranslatef(aabb_min.x, aabb_min.y, aabb_min.z);
-	
-	// glBegin(GL_LINES);
-	// glColor3f(1, 0, 0);
-	// glVertex3f(0, 0, 0);
-	// glVertex3f(4, 0, 0);
-	// glEnd();
-
-	// glBegin(GL_LINES);
-	// glColor3f(0, 1, 0);
-	// glVertex3f(0, 0, 0);
-	// glVertex3f(0, 4, 0);
-	// glEnd();
-
-	// glBegin(GL_LINES);
-	// glColor3f(0, 0, 1);
-	// glVertex3f(0, 0, 0);
-	// glVertex3f(0, 0, 4);
-	// glEnd();
-
-	// glPopMatrix();	
+	}
+	glEnd();
 }
 
-void model::center()
+// reject unused vertices compact and readdress the rest
+void model::compact()
 {
-    vertex v;
-    float cx, cy, cz;
-    float dx, dy, dz;
-    float sum_x, sum_y, sum_z;
-    for (int i=0; i<vertices.size(); i++) {
-	v = vertices[i];
-	sum_x += v.x;
-	sum_y += v.y;
-	sum_z += v.z;
-    }
-    cx = sum_x / vertices.size();
-    cy = sum_y / vertices.size();
-    cz = sum_z / vertices.size();
+	face f;
+	std::vector<char> used = std::vector<char> (vertices.size(), 0);
 
-    for (int i=0; i<vertices.size(); i++) {
-	vertices[i].x -= cx;
-	vertices[i].y -= cy;
-	vertices[i].z -= cz;
-    }
+	// flag position of every used vertex
+	for (int i=0; i<faces.size(); i++) {
+		f = faces[i];
+		used[f.vi0] = 1;
+		used[f.vi1] = 1;
+		used[f.vi2] = 1;
+	}
 
-	aabb_min.x -= cx;
-	aabb_min.y -= cy;
-	aabb_min.z -= cz;
+	// enumerate used vertices to get address mapping:
+	// old (array index) -> new (content - 1)
+	int counter = 0;
+	for (int i=0; i<used.size(); i++) {
+		if (used[i]) used[i] = ++counter;
+	}
 
-	aabb_max.x -= cx;
-	aabb_max.y -= cy;
-	aabb_max.z -= cz;
+	std::vector<vertex> new_vertices =
+		std::vector<vertex> (counter, vertex());
+
+	// transfer vertices and update face indices
+	int ni;						// new index
+	for (int i=0; i<used.size(); i++) {
+		if (used[i]) {
+			ni = used[i]-1;
+			new_vertices[ni] = vertices[i];
+			for (int j=0; j<faces.size(); j++) {
+				f = faces[j];
+				if (f.vi0 == i) {
+					faces[j].vi0 = ni;
+					break;
+				}
+				if (f.vi1 == i) {
+					faces[j].vi1 = ni;
+					break;
+				}
+				if (f.vi2 == i) faces[j].vi2 = ni;
+			}
+		}
+	}
+
+	vertices.swap(new_vertices);
 }

@@ -59,7 +59,7 @@ vmodel::vmodel(model m, int sampling_steps)
 	std::vector<vertex> vertices = m.vertices;
 
 	// origin of ray and triangle vertices
-	vertex origin, v1, v2, v3;
+	vertex origin, v0, v1, v2;
 	// direction of ray
 	vector dir = vector(1, 1, 1);
 	// temporary triangle storage
@@ -69,9 +69,9 @@ vmodel::vmodel(model m, int sampling_steps)
 
 	for (int f = 0; f < faces.size(); f++) {
 		triangle = faces[f];
+		v0 = vertices[triangle.vi0];
 		v1 = vertices[triangle.vi1];
 		v2 = vertices[triangle.vi2];
-		v3 = vertices[triangle.vi3];
 
 		for (int i = 0; i < x; i++) {
 			origin.x = aabb_min.x + i*vsize;
@@ -80,12 +80,13 @@ vmodel::vmodel(model m, int sampling_steps)
 				for (int k = 0; k < z; k++) {
 					origin.z = aabb_min.z + k*vsize;
 
-					if (ray_triangle (v1, v2, v3, origin, dir, &tf))
+					if (ray_triangle (v0, v1, v2, origin, dir, &tf))
 						if (voxels[i][j][k]) voxels[i][j][k] = 0;
 						else voxels[i][j][k] = 1;
 				}
 			}
 		}
+		printf("%f\n", ((float)f)*100/faces.size());
 	}
 }
 

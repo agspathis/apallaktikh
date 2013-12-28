@@ -117,7 +117,9 @@ model::model(vmodel vm)
 		}
 	}
 
+	// this->compact();
 	this->face_normals();
-	vnormals =  std::vector<vector> (vertices.size(), vector());
+	// vnormals = std::vector<vector> (vertices.size(), vector());	
 	this->vertex_normals();
+	this->center();
 }
