@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "model.h"
+#include "vmodel.h"
 #include "intersection.h"
 
 #ifdef _WIN32
@@ -83,18 +84,18 @@ void vector::normalize()
 
 face::face()
 {
-    iv1 = 0;
-    iv2 = 0;
-    iv3 = 0;
+    vi1 = 0;
+    vi2 = 0;
+    vi3 = 0;
 }
 
 // vertex inidices constructor
 
-face::face(int index_v1, int index_v2, int index_v3)
+face::face(int vertex_i1, int vertex_i2, int vertex_i3)
 {
-    iv1 = index_v1;
-    iv2 = index_v2;
-    iv3 = index_v3;
+    vi1 = vertex_i1;
+    vi2 = vertex_i2;
+    vi3 = vertex_i3;
 }
 
 
@@ -107,7 +108,7 @@ model::model(const char* filename)
     vertex v;
 	float x_min, y_min, z_min;
 	float x_max, y_max, z_max;
-    int iv1, iv2, iv3;
+    int vi1, vi2, vi3;
     char line[128];
     FILE *objfile;
 
@@ -127,9 +128,8 @@ model::model(const char* filename)
 		if (v.z > z_max) z_max = v.z;
 	    break;
 	case 'f':
-	    sscanf(&line[1],"%d %d %d", &iv1, &iv2, &iv3);
-	    // if (ccw) faces.push_back(face(--iv1, --iv3, --iv2));
-	    faces.push_back(face(--iv1, --iv3, --iv2));
+	    sscanf(&line[1],"%d %d %d", &vi1, &vi2, &vi3);
+	    faces.push_back(face(--vi1, --vi3, --vi2));
 	    break;
 	default:
 	    continue;
@@ -141,6 +141,10 @@ model::model(const char* filename)
 
 	aabb_min = vertex(x_min, y_min, z_min);
 	aabb_max = vertex(x_max, y_max, z_max);
+
+	this->center();
+	this->face_normals();
+	this->vertex_normals();
 }
 
 // face normal calculation
@@ -150,8 +154,8 @@ void model::face_normals()
     vector fn;
     for (int i = 0; i < faces.size(); i++) {
 	f = faces[i];
-	fn = vector(vertices[f.iv1], vertices[f.iv2])
-	    % vector(vertices[f.iv1], vertices[f.iv3]);
+	fn = vector(vertices[f.vi1], vertices[f.vi2])
+	    % vector(vertices[f.vi1], vertices[f.vi3]);
 	fn.normalize();
 	fnormals.push_back(fn);
     }
@@ -165,9 +169,9 @@ void model::vertex_normals()
     for (int i = 0; i < faces.size(); i++) {
     	f = faces[i];
     	fn = fnormals[i];
-    	vnormals[f.iv1] += fn;
-    	vnormals[f.iv2] += fn;
-    	vnormals[f.iv3] += fn;
+    	vnormals[f.vi1] += fn;
+    	vnormals[f.vi2] += fn;
+    	vnormals[f.vi3] += fn;
     }
 
     for (int i = 0; i < vnormals.size(); i++) {
@@ -181,7 +185,7 @@ void model::debug()
 {
     printf("%d\n", vertices.size());
     printf("%f %f %f\n", vertices[4].x, vertices[4].y, vertices[4].z);
-    printf("%d %d %d\n", faces[4].iv1, faces[4].iv2, faces[4].iv3);
+    printf("%d %d %d\n", faces[4].vi1, faces[4].vi2, faces[4].vi3);
     printf("%f %f %f\n", fnormals[4].i, fnormals[4].j, fnormals[4].k);
     printf("%f %f %f\n", vnormals[4].i, vnormals[4].j, vnormals[4].k);
 
@@ -249,13 +253,13 @@ void model::draw(int mode)
     for (int i=0; i<faces.size(); i++) {
 	f = faces[i];
 
-	v1 = vertices[f.iv1];
-	v2 = vertices[f.iv2];
-	v3 = vertices[f.iv3];
+	v1 = vertices[f.vi1];
+	v2 = vertices[f.vi2];
+	v3 = vertices[f.vi3];
 
-	vn1 = vnormals[f.iv1];
-	vn2 = vnormals[f.iv2];
-	vn3 = vnormals[f.iv3];
+	vn1 = vnormals[f.vi1];
+	vn2 = vnormals[f.vi2];
+	vn3 = vnormals[f.vi3];
 
 	glNormal3f(vn1.i, vn1.j, vn1.k);
 	set_coordinate_material(v1.x, v1.y, v1.z);
@@ -274,6 +278,31 @@ void model::draw(int mode)
 
     }
     glEnd();
+
+	// axes for debugging
+
+	// glPushMatrix();
+	// glTranslatef(aabb_min.x, aabb_min.y, aabb_min.z);
+	
+	// glBegin(GL_LINES);
+	// glColor3f(1, 0, 0);
+	// glVertex3f(0, 0, 0);
+	// glVertex3f(4, 0, 0);
+	// glEnd();
+
+	// glBegin(GL_LINES);
+	// glColor3f(0, 1, 0);
+	// glVertex3f(0, 0, 0);
+	// glVertex3f(0, 4, 0);
+	// glEnd();
+
+	// glBegin(GL_LINES);
+	// glColor3f(0, 0, 1);
+	// glVertex3f(0, 0, 0);
+	// glVertex3f(0, 0, 4);
+	// glEnd();
+
+	// glPopMatrix();	
 }
 
 void model::center()
@@ -306,33 +335,3 @@ void model::center()
 	aabb_max.y -= cy;
 	aabb_max.z -= cz;
 }
-
-// varray
-
-// int varray::index(int i, int j, int k)
-// {
-// 	return (i*y*z + z*j + k);
-// }
-
-// char varray::get(int i, int j, int k)
-// {
-// 	return array[i*y*z + z*j + k];
-// }
-// void varray::flip(int i, int j, int k)
-// {
-// 	int index = i*y*z + z*j + k;
-// 	if (array[index] == 1) array[index] = 0;
-// 	else array[index] = 1;
-// }
-
-// varray::varray(int x_dim, int y_dim, int z_dim)
-// {
-// 	x = x_dim; y = y_dim; z = z_dim;
-// 	array = std::vector<char> (x*y*z, 0);
-// }
-
-// varray::varray()
-// {
-// 	x = 1; y = 1; z = 1;
-// 	array = std::vector<char> (1, 0);
-// }

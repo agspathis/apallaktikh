@@ -2,9 +2,9 @@ CC=g++
 CFLAGS= -lGL -lGLU -lglut
 
 all: main.o visuals.o controls.o model.o\
-	 vmodel.o texture.o intersection.o
+	 vmodel.o texture.o mcubes.o intersection.o
 	$(CC) main.o visuals.o controls.o model.o\
-		  vmodel.o texture.o intersection.o\
+		  vmodel.o texture.o mcubes.o intersection.o\
 		  -o main $(CFLAGS)
 
 main.o: main.cpp
@@ -21,6 +21,9 @@ model.o: model.cpp
 
 vmodel.o: vmodel.cpp
 	$(CC) -c vmodel.cpp -o vmodel.o $(CFLAGS)
+
+mcubes.o: mcubes.cpp
+	$(CC) -c mcubes.cpp -o mcubes.o $(CFLAGS)
 
 texture.o: texture.cpp
 	$(CC) -c texture.cpp -o texture.o $(CFLAGS)

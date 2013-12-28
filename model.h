@@ -1,6 +1,5 @@
 #include <vector>
 
-
 // vertex
 
 class vertex {
@@ -78,7 +77,7 @@ inline vector operator % (const vector& u, const vector& v)
 
 class face {
 public:
-	int iv1, iv2, iv3;
+	int vi1, vi2, vi3;
 	vector n;
 public:
 	face();
@@ -87,6 +86,8 @@ public:
 
 
 // model
+
+class vmodel; /* forward declaration */
 
 class model {
 public:
@@ -97,24 +98,10 @@ public:
 	vertex aabb_min, aabb_max;
 public:
 	model(const char*);
+	model(vmodel);
 	void center();
 	void face_normals();
 	void vertex_normals();
 	void draw(int);
 	void debug();
 };
-
-// voxel array
-
-/* class varray { */
-/* public: */
-/* 	std::vector<char> array; */
-/* 	int x, y, z; // dimensions */
-/* public: */
-/* 	varray(); */
-/* 	varray(int, int, int); */
-/* 	int index(int, int, int); */
-/* 	char get(int, int, int); */
-/* 	void flip(int, int, int); */
-/* }; */
-

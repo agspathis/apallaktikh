@@ -32,9 +32,9 @@ vmodel::vmodel(model m, int sampling_steps)
 	// voxel size determination
 	vsize = ld / sampling_steps;
 
-	x = (int) ceil(aabb_diagonal.i / vsize);
-	y = (int) ceil(aabb_diagonal.j / vsize);
-	z = (int) ceil(aabb_diagonal.k / vsize);
+	x = (int) ceil(aabb_diagonal.i / vsize) + 1;
+	y = (int) ceil(aabb_diagonal.j / vsize) + 1;
+	z = (int) ceil(aabb_diagonal.k / vsize) + 1;
 
 	printf("vmodel x:%d y:%d z:%d, total:%d \n", x, y, z, x*y*z);
 
@@ -69,9 +69,9 @@ vmodel::vmodel(model m, int sampling_steps)
 
 	for (int f = 0; f < faces.size(); f++) {
 		triangle = faces[f];
-		v1 = vertices[triangle.iv1];
-		v2 = vertices[triangle.iv2];
-		v3 = vertices[triangle.iv3];
+		v1 = vertices[triangle.vi1];
+		v2 = vertices[triangle.vi2];
+		v3 = vertices[triangle.vi3];
 
 		for (int i = 0; i < x; i++) {
 			origin.x = aabb_min.x + i*vsize;

@@ -40,7 +40,7 @@ void render()
 	apply_rt(rt);
 
 	models[0].draw(mode);
-	vmodels[0].draw();
+	//vmodels[0].draw();
 
 	glutSwapBuffers(); // All drawing commands applied to the hidden
 					   // buffer, so now, bring forward the hidden
@@ -77,17 +77,11 @@ void setup()
 	// read models
 	models.push_back(model("models/b406_low.obj"));
 
-	for (int i = 0; i < models.size(); i++) {
-		models[i].face_normals();
-		models[i].vertex_normals();
-	}
-
-	models[0].center();
-
 	// extract voxel models
 	vmodels.push_back(vmodel(models[0], VOXEL_RESOLUTION));
+
+	models[0] = model(vmodels[0]);
 	
-	//Parameter handling
 	glShadeModel (GL_SMOOTH);
 
 	// glFrontFace(GL_CW);
@@ -135,7 +129,7 @@ void setup()
 
 	//glEnable(GL_POINT_SMOOTH);
 
-	glEnable(GL_TEXTURE_2D);
+	// glEnable(GL_TEXTURE_2D);
 	load_rgb_texture("textures/bricks.rgb", 512, 512, 1);
 
 	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
