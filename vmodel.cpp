@@ -16,7 +16,7 @@
 
 // voxel model
 
-vmodel::vmodel(model m, int sampling_steps)
+vmodel::vmodel(model m, int samples)
 {
 	float ld; // longest dimension of aabb
 	aabb_min = m.aabb_min;
@@ -30,7 +30,7 @@ vmodel::vmodel(model m, int sampling_steps)
 	if (ld < aabb_diagonal.k) ld = aabb_diagonal.k;
 
 	// voxel size determination
-	vsize = ld / sampling_steps;
+	vsize = ld / samples;
 
 	x = (int) ceil(aabb_diagonal.i / vsize) + 1;
 	y = (int) ceil(aabb_diagonal.j / vsize) + 1;
@@ -66,6 +66,8 @@ vmodel::vmodel(model m, int sampling_steps)
 	face triangle;
 	// placeholder for each intersection coordinates
 	float tf;
+	// for printing progress in voxelization
+	int last_progress_printed = 0;
 
 	for (int f = 0; f < faces.size(); f++) {
 		triangle = faces[f];
@@ -86,8 +88,14 @@ vmodel::vmodel(model m, int sampling_steps)
 				}
 			}
 		}
-		printf("%f\n", ((float)f)*100/faces.size());
+		if (f*100/faces.size() != last_progress_printed &&
+			! (f*100/faces.size() % 5)) {
+			printf("%d...", f*100/faces.size());
+			last_progress_printed = f*100/faces.size();
+			fflush(stdout);
+		}
 	}
+	printf("\n");
 }
 
 void vmodel::draw()

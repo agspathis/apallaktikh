@@ -25,6 +25,9 @@ vmodel.o: vmodel.cpp
 mcubes.o: mcubes.cpp
 	$(CC) -c mcubes.cpp -o mcubes.o $(CFLAGS)
 
+# histogram.o: histogram.cpp model.h
+# 	$(CC) -c histogram.cpp -o histogram.o $(CFLAGS)
+
 texture.o: texture.cpp
 	$(CC) -c texture.cpp -o texture.o $(CFLAGS)
 

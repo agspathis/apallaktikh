@@ -1,4 +1,4 @@
-#define VOXEL_RESOLUTION 30
+#define VOXEL_RESOLUTION 20
 
 // voxel model
 

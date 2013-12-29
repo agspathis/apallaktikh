@@ -64,6 +64,11 @@ void vector::vector_print()
 	printf("%f %f %f\n", i, j, k);
 }
 
+float vector::magn()
+{
+	return sqrt(i*i + j*j + k*k);
+}
+
 void vector::flip()
 {
 	i = -i;
@@ -106,8 +111,12 @@ face::face(int vertex_i0, int vertex_i1, int vertex_i2)
 model::model(const char* filename)
 {
 	vertex v;
-	float x_min, y_min, z_min;
-	float x_max, y_max, z_max;
+	float x_min = 0;
+	float y_min = 0;
+	float z_min = 0;
+	float x_max = 0;
+	float y_max = 0;
+	float z_max = 0;
 	int vi0, vi1, vi2;
 	char line[128];
 	FILE *objfile;
@@ -139,7 +148,7 @@ model::model(const char* filename)
 	
 	aabb_min = vertex(x_min, y_min, z_min);
 	aabb_max = vertex(x_max, y_max, z_max);
-	
+
 	this->face_normals();
 	this->vertex_normals();
 	this->center();
@@ -203,7 +212,7 @@ void model::center()
 	vertices[i].y -= cy;
 	vertices[i].z -= cz;
 	}
-
+	
 	aabb_min.x -= cx;
 	aabb_min.y -= cy;
 	aabb_min.z -= cz;

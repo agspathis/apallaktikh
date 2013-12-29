@@ -31,6 +31,7 @@ public:
     vector(float, float, float);
     vector(vertex, vertex);
     void flip();
+    float magn();
     void normalize();
     void vector_print();
     inline vector operator += (vector v)
@@ -95,6 +96,7 @@ public:
 	std::vector<face> faces;
 	std::vector<vector> vnormals;
 	std::vector<vector> fnormals;
+	std::vector<float> angles;
 	vertex aabb_min, aabb_max;
 public:
 	model(const char*);
@@ -102,7 +104,9 @@ public:
 	void center();
 	void face_normals();
 	void vertex_normals();
+	void compute_angles();
 	void compact();
 	void draw(int);
+	void histogram();
 	void debug();
 };
