@@ -33,24 +33,24 @@ int vmodel::global_vi(int i, int j, int k, int e)
 	int base = 3*(i*y*z + j*z + k);
 	
 	switch(e) {
-	
+		
 	case 8: return base;
 	case 3: return base+1;
 	case 0: return base+2;
-
+		
 	case 9: return global_vi(i, j, k+1, 8);
 	case 1: return global_vi(i, j, k+1, 3);
-
+		
 	case 10: return global_vi(i, j+1, k+1, 8);
 
 	case 2: return global_vi(i, j+1, k, 0);
 	case 11: return global_vi(i, j+1, k, 8);
-
+		
 	case 4: return global_vi(i+1, j, k, 0);
 	case 7: return global_vi(i+1, j, k, 3);
-
+		
 	case 5: return global_vi(i+1, j, k+1, 3);
-
+		
 	case 6: return global_vi(i+1, j+1, k, 0);
 	};
 }
@@ -66,7 +66,7 @@ model::model(vmodel vm)
 	float y_min = vm.aabb_min.y;
 	float z_min = vm.aabb_min.z;
 
-	// populate vertices (on voxel edges)
+	// populate temporary vertices (on voxel edges)
 	float vx, vy, vz;
 	for (int i = 0; i < x; i++) {
 		for (int j = 0; j < y; j++) {
@@ -117,9 +117,8 @@ model::model(vmodel vm)
 		}
 	}
 
-	// this->compact();
+	this->compact();
 	this->face_normals();
-	// vnormals = std::vector<vector> (vertices.size(), vector());	
 	this->vertex_normals();
 	this->center();
 }

@@ -317,21 +317,22 @@ void model::draw(int mode)
 void model::compact()
 {
 	face f;
-	std::vector<char> used = std::vector<char> (vertices.size(), 0);
+	std::vector<int> vused = std::vector<int> (vertices.size(), 0);
 
 	// flag position of every used vertex
 	for (int i=0; i<faces.size(); i++) {
 		f = faces[i];
-		used[f.vi0] = 1;
-		used[f.vi1] = 1;
-		used[f.vi2] = 1;
+		vused[f.vi0] = 1;
+		vused[f.vi1] = 1;
+		vused[f.vi2] = 1;
 	}
 
 	// enumerate used vertices to get address mapping:
 	// old (array index) -> new (content - 1)
 	int counter = 0;
-	for (int i=0; i<used.size(); i++) {
-		if (used[i]) used[i] = ++counter;
+	for (int i=0; i<vused.size(); i++) {
+		++counter;
+		if (vused[i]) vused[i] = counter;
 	}
 
 	std::vector<vertex> new_vertices =
@@ -339,9 +340,9 @@ void model::compact()
 
 	// transfer vertices and update face indices
 	int ni;						// new index
-	for (int i=0; i<used.size(); i++) {
-		if (used[i]) {
-			ni = used[i]-1;
+	for (int i=0; i<vused.size(); i++) {
+		if (vused[i]) {
+			ni = vused[i]-1;
 			new_vertices[ni] = vertices[i];
 			for (int j=0; j<faces.size(); j++) {
 				f = faces[j];
@@ -353,7 +354,9 @@ void model::compact()
 					faces[j].vi1 = ni;
 					break;
 				}
-				if (f.vi2 == i) faces[j].vi2 = ni;
+				if (f.vi2 == i) {
+					faces[j].vi2 = ni;
+				}
 			}
 		}
 	}
