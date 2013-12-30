@@ -120,7 +120,7 @@ model::model(const char* filename)
 	int vi0, vi1, vi2;
 	char line[128];
 	FILE *objfile;
-	
+
 	if (!(objfile = fopen(filename, "rt"))) return;
 
 	while (fgets(line, 128, objfile)) {
@@ -131,7 +131,7 @@ model::model(const char* filename)
 			if (v.x < x_min) x_min = v.x;
 			if (v.y < y_min) y_min = v.y;
 			if (v.z < z_min) z_min = v.z;
-			
+
 			if (v.x > x_max) x_max = v.x;
 			if (v.y > y_max) y_max = v.y;
 			if (v.z > z_max) z_max = v.z;
@@ -145,7 +145,7 @@ model::model(const char* filename)
 		};
 	}
 	fclose(objfile);
-	
+
 	aabb_min = vertex(x_min, y_min, z_min);
 	aabb_max = vertex(x_max, y_max, z_max);
 
@@ -212,7 +212,7 @@ void model::center()
 	vertices[i].y -= cy;
 	vertices[i].z -= cz;
 	}
-	
+
 	aabb_min.x -= cx;
 	aabb_min.y -= cy;
 	aabb_min.z -= cz;
@@ -340,8 +340,7 @@ void model::compact()
 	// old (array index) -> new (content - 1)
 	int counter = 0;
 	for (int i=0; i<vused.size(); i++) {
-		++counter;
-		if (vused[i]) vused[i] = counter;
+		if (vused[i]) vused[i] = ++counter;
 	}
 
 	std::vector<vertex> new_vertices =
@@ -357,18 +356,21 @@ void model::compact()
 				f = faces[j];
 				if (f.vi0 == i) {
 					faces[j].vi0 = ni;
-					break;
+					printf("%d, i:%d, j:%d v0\n", ni, i, j);
 				}
 				if (f.vi1 == i) {
 					faces[j].vi1 = ni;
-					break;
+					printf("%d, i:%d, j:%d v1\n", ni, i, j);
 				}
 				if (f.vi2 == i) {
 					faces[j].vi2 = ni;
+					printf("%d, i:%d, j:%d v2\n", ni, i, j);
 				}
 			}
 		}
 	}
 
+	printf("old vertices %d\n", vertices.size());
 	vertices.swap(new_vertices);
+	printf("new vertices %d\n", vertices.size());
 }
