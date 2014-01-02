@@ -21,11 +21,11 @@ static float t_step = 0.5;
 static int last_x = 0;
 static int last_y = 0;
 
-float distance = -30;
+float distance = 30;
 int texture_enabled = 0;
 int vres_step = 5;
 int vres = vres_step;
-int view = 0;
+int view = 3;
 
 void key_down(unsigned char key,int x,int y)
 {
@@ -34,9 +34,9 @@ void key_down(unsigned char key,int x,int y)
 	case 27 : exit(0);			// escape
 		break;
 
-	case '=' : distance += 1;
+	case '-' : distance += 1;
 		break;
-	case '-' : distance -= 1;
+	case '=' : distance -= 1;
 		break;
 
 	case 't':
@@ -53,9 +53,11 @@ void key_down(unsigned char key,int x,int y)
 		break;
 	case '1': view = 1;		// voxel model
 		break;
-	case '2': view = 2;		// reconstruction
+	case '2': view = 2;		// reconstructed model
 		break;
-	case '3': view = 3;
+	case '3': view = 3;		// angle histogram (master)
+		break;
+	case '4': view = 4;		// angle histogram (reconstructed)
 		break;
 
 	case 'i': vres += vres_step;
@@ -102,7 +104,7 @@ void mouse_wheel(int wheel, int direction, int x, int y)
 
 void mouse_motion(int x, int y)
 {
-	float rot_x = - 0.5 * (y - last_y);
+	float rot_x = 0.5 * (y - last_y);
 	float rot_y = 0.5 * (x - last_x);
  	last_x = x;
  	last_y = y;

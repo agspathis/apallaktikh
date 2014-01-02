@@ -39,8 +39,6 @@ void render()
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(0, 0, distance, 0, 0, 0, 0, 1, 0);
-	apply_rt(rt);
 
 	int render_index;
 
@@ -49,11 +47,28 @@ void render()
 	else render_index = vres/vres_step-1;
 	
 	switch (view) {
-	case 0 : master_model.draw(mode);
+	case 0 :
+		gluLookAt(0, 0, distance, 0, 0, 0, 0, 1, 0);
+		apply_rt(rt);
+		master_model.draw(mode);
 		break;
-	case 1 : vmodels[render_index].draw();
+	case 1 :
+		gluLookAt(0, 0, distance, 0, 0, 0, 0, 1, 0);		
+		apply_rt(rt);
+		vmodels[render_index].draw();
 		break;
-	case 2 : rmodels[render_index].draw(mode);
+	case 2 :
+		gluLookAt(0, 0, distance, 0, 0, 0, 0, 1, 0);
+		apply_rt(rt);
+		rmodels[render_index].draw(mode);
+		break;
+	case 3 :
+		gluLookAt(0, 0, 30, 0, 0, 0, 0, 1, 0);
+		master_model.histogram();
+		break;
+	case 4 :
+		gluLookAt(0, 0, 30, 0, 0, 0, 0, 1, 0);
+		rmodels[render_index].histogram();
 		break;
 	default : break;
 	}
@@ -134,7 +149,7 @@ void setup()
 	GLfloat light0_position[] = { 20.0, 40.0, 150.0, 1.0 };
 	GLfloat light1_position[] = { 20.0, 40.0, -150.0, 1.0 };
 	GLfloat ambientLight[] = { 0.1, 0.1, 0.1, 1.0 };
-	GLfloat diffuseLight[] = { 0.8, 0.8, 0.8, 1.0 };
+	GLfloat diffuseLight[] = { 0.5, 0.5, 0.5, 1.0 };
 	GLfloat specularLight[] = { 0.1, 0.1, 0.1, 1.0 };
 
 	// init light0
