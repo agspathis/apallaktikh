@@ -99,10 +99,16 @@ void idle()
 {
 	while (vres > vres_step*vmodels.size()) {
 		// while requested > largest available, generate one more
+
 		vmodel new_vmodel =
 			vmodel(master_model, vres_step*(1+vmodels.size()));
 		vmodels.push_back(new_vmodel);
-		rmodels.push_back(model(new_vmodel));
+
+		model new_rmodel = model(new_vmodel);
+		new_rmodel.distance(master_model);
+		rmodels.push_back(new_rmodel);
+
+		printf("distance: %f\n\n", new_rmodel.dist);
 	}
 	glutPostRedisplay();
 }
@@ -112,8 +118,18 @@ void setup()
 	// read models
 	master_model = model("models/test.obj");
 
-	vmodels.push_back(vmodel(master_model, vres_step));
-	rmodels.push_back(model(vmodels[0]));
+	// vmodels.push_back(vmodel(master_model, vres_step));
+	// rmodels.push_back(model(vmodels[0]));
+
+	vmodel new_vmodel =
+		vmodel(master_model, vres_step*(1+vmodels.size()));
+	vmodels.push_back(new_vmodel);
+	
+	model new_rmodel = model(new_vmodel);
+	new_rmodel.distance(master_model);
+	rmodels.push_back(new_rmodel);
+	
+	printf("distance: %f\n\n", new_rmodel.dist);
 	
 	glShadeModel (GL_SMOOTH);
 

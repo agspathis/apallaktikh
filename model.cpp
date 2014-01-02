@@ -1,5 +1,6 @@
 #include <math.h>
 #include <stdio.h>
+#include <float.h>
 
 #include <vector>
 
@@ -113,12 +114,12 @@ model::model() { }
 model::model(const char* filename)
 {
 	vertex v;
-	float x_min = 0;
-	float y_min = 0;
-	float z_min = 0;
-	float x_max = 0;
-	float y_max = 0;
-	float z_max = 0;
+	float x_min = +FLT_MAX;
+	float y_min = +FLT_MAX;
+	float z_min = +FLT_MAX;
+	float x_max = -FLT_MAX;
+	float y_max = -FLT_MAX;
+	float z_max = -FLT_MAX;
 	int vi0, vi1, vi2;
 	char line[128];
 	FILE *objfile;
@@ -150,6 +151,8 @@ model::model(const char* filename)
 
 	aabb_min = vertex(x_min, y_min, z_min);
 	aabb_max = vertex(x_max, y_max, z_max);
+
+	dist = 0;				// master model (directly from file)
 
 	this->face_normals();
 	this->vertex_normals();
@@ -201,19 +204,19 @@ void model::center()
 	float dx, dy, dz;
 	float sum_x, sum_y, sum_z;
 	for (int i=0; i<vertices.size(); i++) {
-	v = vertices[i];
-	sum_x += v.x;
-	sum_y += v.y;
-	sum_z += v.z;
+		v = vertices[i];
+		sum_x += v.x;
+		sum_y += v.y;
+		sum_z += v.z;
 	}
 	cx = sum_x / vertices.size();
 	cy = sum_y / vertices.size();
 	cz = sum_z / vertices.size();
 
 	for (int i=0; i<vertices.size(); i++) {
-	vertices[i].x -= cx;
-	vertices[i].y -= cy;
-	vertices[i].z -= cz;
+		vertices[i].x -= cx;
+		vertices[i].y -= cy;
+		vertices[i].z -= cz;
 	}
 
 	aabb_min.x -= cx;
@@ -301,39 +304,28 @@ void model::draw(int mode)
 		v0 = vertices[f.vi0];
 		v1 = vertices[f.vi1];
 		v2 = vertices[f.vi2];
-		
+
 		vn0 = vnormals[f.vi0];
 		vn1 = vnormals[f.vi1];
 		vn2 = vnormals[f.vi2];
-		
+
 		glNormal3f(vn0.i, vn0.j, vn0.k);
 		set_coordinate_material(v0.x, v0.y, v0.z);
 		spherical_map_texture(v0.x, v0.y, v0.z);
 		glVertex3f(v0.x, v0.y, v0.z);
-		
+
 		glNormal3f(vn1.i, vn1.j, vn1.k);
 		set_coordinate_material(v1.x, v1.y, v1.z);
 		spherical_map_texture(v1.x, v1.y, v1.z);
 		glVertex3f(v1.x, v1.y, v1.z);
-		
+
 		glNormal3f(vn2.i, vn2.j, vn2.k);
 		set_coordinate_material(v2.x, v2.y, v2.z);
 		spherical_map_texture(v2.x, v2.y, v2.z);
 		glVertex3f(v2.x, v2.y, v2.z);
-		
+
 	}
 	glEnd();
-
-	// glBegin(GL_LINES);
-	// vertex v;
-	// vector n;
-	// for (int i=0; i<vertices.size(); i++) {
-	// 	v = vertices[i];
-	// 	n = vnormals[i];
-	// 	glVertex3f(v.x, v.y, v.z);
-	// 	glVertex3f(v.x+n.i, v.y+n.j, v.z+n.k);
-	// }
-	// glEnd();
 }
 
 // reject unused vertices compact and readdress the rest
@@ -384,7 +376,31 @@ void model::compact()
 		}
 	}
 
-	printf("old vertices %d\n", vertices.size());
 	vertices.swap(new_vertices);
-	printf("new vertices %d\n", vertices.size());
+
+	printf("%d vertices compacted to %d\n",
+		   new_vertices.size(),
+		   vertices.size());
+}
+
+// distance is the sum of the minimum distances of each reference
+// model vertex from the closest m model vertex, divided by the number
+// of reference model vertices (per vertex minimum distance mean
+// value)
+
+float model::distance(const model ref)
+{
+	float sum = 0;
+	float min_dist;
+	const std::vector<vertex> rv = ref.vertices;
+
+	for (int i=0; i<rv.size(); i++) {
+		min_dist = vector(rv[i], vertices[0]).magn();
+		for (int j=1; j<vertices.size(); j++)
+			if (min_dist > vector(rv[i], vertices[j]).magn())
+				min_dist = vector(rv[i], vertices[j]).magn();
+		sum += min_dist;
+	}
+	dist =  sum / rv.size();
+	return dist;
 }

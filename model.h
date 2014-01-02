@@ -92,12 +92,13 @@ class vmodel; /* forward declaration */
 
 class model {
 public:
+	float dist;
+	vertex aabb_min, aabb_max;
 	std::vector<vertex> vertices;
 	std::vector<face> faces;
 	std::vector<vector> vnormals;
 	std::vector<vector> fnormals;
 	std::vector<float> angles;
-	vertex aabb_min, aabb_max;
 public:
 	model();
 	model(const char*);
@@ -109,5 +110,6 @@ public:
 	void compact();
 	void draw(int);
 	void histogram();
+	float distance(const model);
 	void debug();
 };
