@@ -106,6 +106,8 @@ face::face(int vertex_i0, int vertex_i1, int vertex_i2)
 
 // model
 
+model::model() { }
+
 // .obj file constructor
 
 model::model(const char* filename)
@@ -138,7 +140,7 @@ model::model(const char* filename)
 			break;
 		case 'f':
 			sscanf(&line[1],"%d %d %d", &vi0, &vi1, &vi2);
-			faces.push_back(face(--vi0, --vi2, --vi1));
+			faces.push_back(face(--vi0, --vi1, --vi2));
 			break;
 		default:
 			continue;
@@ -151,6 +153,7 @@ model::model(const char* filename)
 
 	this->face_normals();
 	this->vertex_normals();
+	this->compute_angles();
 	this->center();
 }
 
@@ -293,33 +296,44 @@ void model::draw(int mode)
 	glBegin(GL_TRIANGLES);
 
 	for (int i=0; i<faces.size(); i++) {
-	f = faces[i];
+		f = faces[i];
 
-	v0 = vertices[f.vi0];
-	v1 = vertices[f.vi1];
-	v2 = vertices[f.vi2];
-
-	vn0 = vnormals[f.vi0];
-	vn1 = vnormals[f.vi1];
-	vn2 = vnormals[f.vi2];
-
-	glNormal3f(vn0.i, vn0.j, vn0.k);
-	set_coordinate_material(v0.x, v0.y, v0.z);
-	spherical_map_texture(v0.x, v0.y, v0.z);
-	glVertex3f(v0.x, v0.y, v0.z);
-
-	glNormal3f(vn1.i, vn1.j, vn1.k);
-	set_coordinate_material(v1.x, v1.y, v1.z);
-	spherical_map_texture(v1.x, v1.y, v1.z);
-	glVertex3f(v1.x, v1.y, v1.z);
-
-	glNormal3f(vn2.i, vn2.j, vn2.k);
-	set_coordinate_material(v2.x, v2.y, v2.z);
-	spherical_map_texture(v2.x, v2.y, v2.z);
-	glVertex3f(v2.x, v2.y, v2.z);
-
+		v0 = vertices[f.vi0];
+		v1 = vertices[f.vi1];
+		v2 = vertices[f.vi2];
+		
+		vn0 = vnormals[f.vi0];
+		vn1 = vnormals[f.vi1];
+		vn2 = vnormals[f.vi2];
+		
+		glNormal3f(vn0.i, vn0.j, vn0.k);
+		set_coordinate_material(v0.x, v0.y, v0.z);
+		spherical_map_texture(v0.x, v0.y, v0.z);
+		glVertex3f(v0.x, v0.y, v0.z);
+		
+		glNormal3f(vn1.i, vn1.j, vn1.k);
+		set_coordinate_material(v1.x, v1.y, v1.z);
+		spherical_map_texture(v1.x, v1.y, v1.z);
+		glVertex3f(v1.x, v1.y, v1.z);
+		
+		glNormal3f(vn2.i, vn2.j, vn2.k);
+		set_coordinate_material(v2.x, v2.y, v2.z);
+		spherical_map_texture(v2.x, v2.y, v2.z);
+		glVertex3f(v2.x, v2.y, v2.z);
+		
 	}
 	glEnd();
+
+	// glBegin(GL_LINES);
+	// vertex v;
+	// vector n;
+	// for (int i=0; i<vertices.size(); i++) {
+	// 	v = vertices[i];
+	// 	n = vnormals[i];
+	// 	glVertex3f(v.x, v.y, v.z);
+	// 	glVertex3f(v.x+n.i, v.y+n.j, v.z+n.k);
+	// }
+	// glEnd();
 }
 
 // reject unused vertices compact and readdress the rest
@@ -356,15 +370,15 @@ void model::compact()
 				f = faces[j];
 				if (f.vi0 == i) {
 					faces[j].vi0 = ni;
-					printf("%d, i:%d, j:%d v0\n", ni, i, j);
+					//printf("%d, i:%d, j:%d v0\n", ni, i, j);
 				}
 				if (f.vi1 == i) {
 					faces[j].vi1 = ni;
-					printf("%d, i:%d, j:%d v1\n", ni, i, j);
+					//printf("%d, i:%d, j:%d v1\n", ni, i, j);
 				}
 				if (f.vi2 == i) {
 					faces[j].vi2 = ni;
-					printf("%d, i:%d, j:%d v2\n", ni, i, j);
+					//printf("%d, i:%d, j:%d v2\n", ni, i, j);
 				}
 			}
 		}

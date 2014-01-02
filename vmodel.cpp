@@ -89,7 +89,7 @@ vmodel::vmodel(model m, int samples)
 			}
 		}
 		if (f*100/faces.size() != last_progress_printed &&
-			! (f*100/faces.size() % 5)) {
+			! (f*100/faces.size() % 10)) {
 			printf("%d...", f*100/faces.size());
 			last_progress_printed = f*100/faces.size();
 			fflush(stdout);

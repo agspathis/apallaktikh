@@ -99,6 +99,7 @@ public:
 	std::vector<float> angles;
 	vertex aabb_min, aabb_max;
 public:
+	model();
 	model(const char*);
 	model(vmodel);
 	void center();

@@ -13,8 +13,7 @@
 
 int mode = SOLID;
 
-int object = BOTH;				// active object = 0, 1 or BOTH (2)
-struct rt rt;
+struct rt rt = {0, 0, 0, 0, 0, 0};
 
 static float r_step = 5;
 static float t_step = 0.5;
@@ -22,51 +21,47 @@ static float t_step = 0.5;
 static int last_x = 0;
 static int last_y = 0;
 
+float distance = -30;
+int texture_enabled = 0;
+int vres_step = 5;
+int vres = vres_step;
+int view = 0;
+
 void key_down(unsigned char key,int x,int y)
 {
 	switch(key)
 	{
-	case 27 : exit(0);
+	case 27 : exit(0);			// escape
 		break;
 
-		// translations
-	case 'q':
-		rt.tx += t_step;
+	case '=' : distance += 1;
 		break;
-	case 'w':
-		rt.tx -= t_step;
+	case '-' : distance -= 1;
 		break;
-	case 'a':
-		rt.ty += t_step;
+
+	case 't':
+		if (texture_enabled) {
+			glDisable(GL_TEXTURE_2D);
+			texture_enabled = 0;
+		}
+		else {
+			glEnable(GL_TEXTURE_2D);
+			texture_enabled = 1;
+		}
 		break;
-	case 's':
-		rt.ty -= t_step;
+	case '0': view = 0;		// master model
 		break;
-	case 'z':
-		rt.tz += t_step;
+	case '1': view = 1;		// voxel model
 		break;
-	case 'x':
-		rt.tz -= t_step;
+	case '2': view = 2;		// reconstruction
 		break;
-		
-		// rotations
-	case 'o':
-		rt.rx -= r_step;
+	case '3': view = 3;
 		break;
-	case 'p':
-		rt.rx += r_step;
+
+	case 'i': vres += vres_step;
 		break;
-	case 'k':
-		rt.ry -= r_step;
-		break;
-	case 'l':
-		rt.ry += r_step;
-		break;
-	case 'n':
-		rt.rz -= r_step;
-		break;
-	case 'm':
-		rt.rz += r_step;
+	case 'd':
+		if (vres>vres_step) vres -= vres_step;
 		break;
 		
 	default : break;
@@ -75,25 +70,44 @@ void key_down(unsigned char key,int x,int y)
 	glutPostRedisplay();
 }
 
-void key_up(unsigned char key,int x,int y)
+void key_up(unsigned char key, int x, int y)
 {
 	glutPostRedisplay();
 }
 
-void mouse(int button,int state,int x,int y)
+void mouse(int button, int state, int x, int y)
 {
-	if(state == GLUT_DOWN && button == GLUT_LEFT_BUTTON) {
-		last_x = x;
-		last_y = y;
-		glutPostRedisplay();
+	switch (button) {
+	case GLUT_LEFT_BUTTON :
+		if(state == GLUT_DOWN) {
+			last_x = x;
+			last_y = y;
+			glutPostRedisplay();
+		}
+	break;
+	default : break;
+	}
+}
+
+void mouse_wheel(int wheel, int direction, int x, int y)
+{
+	switch (direction) {
+	case -1 : distance += 5;
+		break;
+	case 1 : distance -= 5;
+		break;
+	default : break;
 	}
 }
 
 void mouse_motion(int x, int y)
 {
-	float dist = 0.001 * (x - last_x + y - last_y);
+	float rot_x = - 0.5 * (y - last_y);
+	float rot_y = 0.5 * (x - last_x);
  	last_x = x;
  	last_y = y;
+	rt.rx += rot_x;
+	rt.ry += rot_y;
 	glutPostRedisplay();
 }
 

@@ -120,5 +120,6 @@ model::model(vmodel vm)
 	this->compact();
 	this->face_normals();
 	this->vertex_normals();
+	this->compute_angles();
 	this->center();
 }

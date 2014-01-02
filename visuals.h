@@ -20,3 +20,6 @@ void setup();
 
 void idle();
 // Idle function
+
+void voxelize_reconstruct();
+
