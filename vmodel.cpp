@@ -98,7 +98,8 @@ vmodel::vmodel(model m, int samples)
 	printf("\n");
 }
 
-void vmodel::draw()
+// element type one of VELEM_CUBE, VELEM_SPHERE
+void vmodel::draw(int element_type)
 {
 	glPushMatrix();
 	glTranslatef(aabb_min.x, aabb_min.y, aabb_min.z);
@@ -108,7 +109,9 @@ void vmodel::draw()
 				if (voxels[i][j][k] == 1) {
 					glPushMatrix();
 					glTranslatef(i*vsize, j*vsize, k*vsize);
-					glutSolidCube(vsize);
+					if (element_type == VELEM_CUBE)
+						glutSolidCube(vsize);
+					else glutSolidSphere(vsize/2, 8, 5);
 					glPopMatrix();
 				}
 			}

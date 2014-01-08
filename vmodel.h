@@ -1,4 +1,6 @@
 #define VOXEL_RESOLUTION 20
+#define VELEM_SPHERE 0
+#define VELEM_CUBE 1
 
 // voxel model
 
@@ -12,6 +14,6 @@ public:
 	vmodel(model, int);
 	/* computation of global vertex index for marching cubes */
 	int global_vi(int, int, int, int);
-	void draw();
+	void draw(int);
 	void debug();
 };

@@ -51,13 +51,15 @@ void key_down(unsigned char key,int x,int y)
 		break;
 	case '0': view = 0;		// master model
 		break;
-	case '1': view = 1;		// voxel model
+	case '1': view = 1;		// voxel model (cubes)
 		break;
 	case '2': view = 2;		// reconstructed model
 		break;
 	case '3': view = 3;		// angle histogram (master)
 		break;
 	case '4': view = 4;		// angle histogram (reconstructed)
+		break;
+	case '5': view = 5;		// voxel model (spheres)
 		break;
 
 	case 'i': vres += vres_step;

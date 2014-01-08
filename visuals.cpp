@@ -55,7 +55,7 @@ void render()
 	case 1 :
 		gluLookAt(0, 0, distance, 0, 0, 0, 0, 1, 0);		
 		apply_rt(rt);
-		vmodels[render_index].draw();
+		vmodels[render_index].draw(VELEM_CUBE);
 		break;
 	case 2 :
 		gluLookAt(0, 0, distance, 0, 0, 0, 0, 1, 0);
@@ -69,6 +69,11 @@ void render()
 	case 4 :
 		gluLookAt(0, 0, 30, 0, 0, 0, 0, 1, 0);
 		rmodels[render_index].histogram();
+		break;
+	case 5 :
+		gluLookAt(0, 0, distance, 0, 0, 0, 0, 1, 0);		
+		apply_rt(rt);
+		vmodels[render_index].draw(VELEM_SPHERE);
 		break;
 	default : break;
 	}
