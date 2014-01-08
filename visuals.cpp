@@ -116,7 +116,7 @@ void idle()
 void setup()
 {
 	// read models
-	master_model = model("models/test.obj");
+	master_model = model("models/model.obj");
 
 	// vmodels.push_back(vmodel(master_model, vres_step));
 	// rmodels.push_back(model(vmodels[0]));
@@ -187,7 +187,7 @@ void setup()
 
 	//glEnable(GL_POINT_SMOOTH);
 
-	load_rgb_texture("textures/bricks.rgb", 512, 512, 1);
+	load_rgb_texture("textures/texture.rgb", 512, 512, 1);
 
 	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 
