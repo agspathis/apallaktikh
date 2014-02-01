@@ -14,6 +14,6 @@ public:
 	vmodel(model, int);
 	/* computation of global vertex index for marching cubes */
 	int global_vi(int, int, int, int);
-	void draw(int);
+	void draw(int, int);
 	void debug();
 };

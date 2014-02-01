@@ -39,6 +39,7 @@ void render()
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+	// glPolygonMode(GL_FRONT_AND_BACK,mode);
 
 	int render_index;
 
@@ -55,7 +56,7 @@ void render()
 	case 1 :
 		gluLookAt(0, 0, distance, 0, 0, 0, 0, 1, 0);		
 		apply_rt(rt);
-		vmodels[render_index].draw(VELEM_CUBE);
+		vmodels[render_index].draw(VELEM_CUBE, mode);
 		break;
 	case 2 :
 		gluLookAt(0, 0, distance, 0, 0, 0, 0, 1, 0);
@@ -73,14 +74,14 @@ void render()
 	case 5 :
 		gluLookAt(0, 0, distance, 0, 0, 0, 0, 1, 0);		
 		apply_rt(rt);
-		vmodels[render_index].draw(VELEM_SPHERE);
+		vmodels[render_index].draw(VELEM_SPHERE, mode);
 		break;
 	default : break;
 	}
 
-	glutSwapBuffers(); // All drawing commands applied to the hidden
-					   // buffer, so now, bring forward the hidden
-					   // buffer and hide the visible one
+	// All drawing commands applied to the hidden buffer, so now, bring
+	// forward the hidden buffer and hide the visible one
+	glutSwapBuffers();
 }
 
 void resize(int w, int h)

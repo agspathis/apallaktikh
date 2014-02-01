@@ -40,6 +40,12 @@ public:
 	j += v.j;
 	k += v.k;
     };
+    inline vector operator -= (vector v)
+    {
+	i -= v.i;
+	j -= v.j;
+	k -= v.k;
+    };
 
 };
 
@@ -47,10 +53,36 @@ public:
 
 // addition
 
-inline vector operator + (vector lv, const vector& rv)
+inline vector operator + (const vector& lv, const vector& rv)
 {
-    lv += rv;
-    return lv;
+    vector result;
+    result.i = lv.i + rv.i;
+    result.j = lv.j + rv.j;
+    result.k = lv.k + rv.k;
+    return result;
+}
+
+
+// subtraction
+
+inline vector operator - (const vector& lv, const vector& rv)
+{
+    vector result;
+    result.i = lv.i - rv.i;
+    result.j = lv.j - rv.j;
+    result.k = lv.k - rv.k;
+    return result;
+}
+
+// scaling
+
+inline vector operator * (const float& s, const vector& v)
+{
+    vector sv;
+    sv.i = v.i * s;
+    sv.j = v.j * s;
+    sv.k = v.k * s;
+    return sv;
 }
 
 // dot product

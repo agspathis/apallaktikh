@@ -14,6 +14,11 @@ extern float distance;
 extern int vres;
 extern int vres_step;
 
+/* simulation */
+extern int sim_f;
+extern int sim_c;
+extern int reverse;
+
 void menu(int choice);
 void mouse_motion(int x, int y);
 void key_up(unsigned char key, int x, int y);

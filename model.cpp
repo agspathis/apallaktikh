@@ -79,7 +79,7 @@ void vector::flip()
 
 void vector::normalize()
 {
-	float magnitude = sqrt(i*i + j*j + k*k);
+    float magnitude = this->magn(); // sqrt(i*i + j*j + k*k);
 	i /= magnitude;
 	j /= magnitude;
 	k /= magnitude;
