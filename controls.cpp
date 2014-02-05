@@ -84,7 +84,7 @@ void key_down(unsigned char key,int x,int y)
     case ' ':			// pause
 	sim_pause = !sim_pause;
 	break;
-    case ',':			// reverse
+    case ',':			// rewind
 	frame_step--;
 	break;
     case '.':			// fast forward

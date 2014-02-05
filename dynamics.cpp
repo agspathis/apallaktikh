@@ -172,11 +172,13 @@ void particle_system::draw_frame()
     }
 
     current_frame += frame_step;
+    
+    // clamp to range 0 .. frames.size()-1
+    if (current_frame < 0)
+	current_frame = 0;
 
     if (current_frame > (frames.size()-1))
 	current_frame = frames.size()-1;
-    if (current_frame < 0)
-	current_frame = 0;
 }
 
 
