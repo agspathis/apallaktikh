@@ -1,3 +1,6 @@
+#ifndef VMODEL_H
+#define VMODEL_H
+
 #define VOXEL_RESOLUTION 20
 #define VELEM_SPHERE 0
 #define VELEM_CUBE 1
@@ -17,3 +20,5 @@ public:
 	void draw(int, int);
 	void debug();
 };
+
+#endif

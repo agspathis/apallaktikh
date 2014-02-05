@@ -15,9 +15,11 @@ extern int vres;
 extern int vres_step;
 
 /* simulation */
-extern int sim_f;
-extern int sim_c;
-extern int reverse;
+extern int ff_sim;
+extern int c_sim;
+extern int sim_pause;
+extern int frame_step;
+
 
 void menu(int choice);
 void mouse_motion(int x, int y);

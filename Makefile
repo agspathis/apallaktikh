@@ -5,9 +5,9 @@ all: main.o visuals.o controls.o model.o\
 	vmodel.o texture.o mcubes.o angles.o\
 	dynamics.o intersection.o
 	$(CC) main.o visuals.o controls.o model.o\
-		  vmodel.o texture.o mcubes.o angles.o\
-          intersection.o\
-		  -o main $(CFLAGS)
+	  vmodel.o texture.o mcubes.o angles.o\
+          intersection.o dynamics.o\
+	  -o main $(CFLAGS)
 
 main.o: main.cpp
 	$(CC) -c main.cpp -o main.o $(CFLAGS)

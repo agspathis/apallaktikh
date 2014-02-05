@@ -25,11 +25,12 @@ float distance = 30;
 int texture_enabled = 0;
 int vres_step = 5;
 int vres = vres_step;
-int view = 3;
+int view = 0;
 
-int sim_f = 0;
-int sim_c = 0;
-int reverse = 0;
+int c_sim = 0;
+int ff_sim = 0;
+int sim_pause = 0;
+int frame_step = 1;
 
 void key_down(unsigned char key,int x,int y)
 {
@@ -65,6 +66,8 @@ void key_down(unsigned char key,int x,int y)
 	break;
     case '5': view = 5;		// voxel model (spheres)
 	break;
+    case '6': view = 6;		// simulation
+	break;
 
     case 'i': vres += vres_step;
 	break;
@@ -73,20 +76,20 @@ void key_down(unsigned char key,int x,int y)
 	break;
 
     case 'f':
-	sim_f = 1;		// free fall
+	ff_sim = 1;		// free fall
 	break;
     case 'c':			// collision
-	sim_c = 1;
+	c_sim = 1;
 	break;
-    case ' ':
-	reverse = !reverse;
+    case ' ':			// pause
+	sim_pause = !sim_pause;
 	break;
-    case 'r':			// reset
-	sim_f = 0;
-	sim_c = 0;
-	reverse = 0;
+    case ',':			// reverse
+	frame_step--;
 	break;
-
+    case '.':			// fast forward
+	frame_step++;
+	break;
 
     default : break;
     }
