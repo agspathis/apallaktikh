@@ -97,7 +97,7 @@ void collision(particle* p1, particle* p2, float r)
 	// position adjustment
 	float adjustment = (2*r - dist)/2;
 	p1->pos -= adjustment*axis;
-	p1->pos += adjustment*axis;
+	p2->pos += adjustment*axis;
     }
 }
 
@@ -105,30 +105,9 @@ void particle_system::wall_hit(particle* p)
 {
     vector pos = p->pos;
 
-    if (pos.i > x_max - radius) {
-	p->pos.i = x_max - radius;
-	p->vel.i = - p->vel.i;
-    }
-    if (pos.j > y_max - radius) {
-	p->pos.j = y_max - radius;
-	p->vel.j = - p->vel.j;
-    }
-    if (pos.k > z_max - radius) {
-	p->pos.k = z_max - radius;
-	p->vel.k = - p->vel.k;
-    }
-
-    if (pos.i < x_min + radius) {
-	p->pos.i = x_min + radius;
-	p->vel.i = - p->vel.i;
-    }
     if (pos.j < y_min + radius) {
 	p->pos.j = y_min + radius;
 	p->vel.j = - p->vel.j;
-    }
-    if (pos.k < z_min + radius) {
-	p->pos.k = z_min + radius;
-	p->vel.k = - p->vel.k;
     }
 }
 
@@ -145,8 +124,8 @@ void particle_system::update(int with_collisions)
     if (with_collisions) {
 
 	// particle-particle collision handling
-	for(int i = 0; i < particles.size(); i++) {
-	    for(int j = i; j < particles.size(); j++) {
+	for(int i = 0; i < particles.size()-1; i++) {
+	    for(int j = i+1; j < particles.size(); j++) {
 		collision(&particles[i], &particles[j], radius);
 	    }
 	}
