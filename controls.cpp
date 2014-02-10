@@ -30,7 +30,7 @@ int view = 0;
 int c_sim = 0;
 int ff_sim = 0;
 int sim_pause = 0;
-int frame_step = 1;
+int frame_step = 2;
 
 void key_down(unsigned char key,int x,int y)
 {
@@ -85,10 +85,10 @@ void key_down(unsigned char key,int x,int y)
 	sim_pause = !sim_pause;
 	break;
     case ',':			// rewind
-	frame_step--;
+	frame_step -= 2;
 	break;
     case '.':			// fast forward
-	frame_step++;
+	frame_step += 2;
 	break;
 
     default : break;
@@ -118,6 +118,7 @@ void mouse(int button, int state, int x, int y)
 
 void mouse_wheel(int wheel, int direction, int x, int y)
 {
+    printf("mouse_wheel called\n");
     switch (direction) {
     case -1 : distance += 5;
 	break;

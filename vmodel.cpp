@@ -67,6 +67,7 @@ vmodel::vmodel(model m, int samples)
     // placeholder for each intersection coordinates
     float tf;
     // for printing progress in voxelization
+    int current_progress;
     int last_progress_printed = 0;
 
     for (int f = 0; f < faces.size(); f++) {
@@ -88,10 +89,11 @@ vmodel::vmodel(model m, int samples)
 		}
 	    }
 	}
-	if (f*100/faces.size() != last_progress_printed &&
-	    ! (f*100/faces.size() % 10)) {
-	    printf("%d...", f*100/faces.size());
-	    last_progress_printed = f*100/faces.size();
+	current_progress = f*100/faces.size();
+	if (current_progress != last_progress_printed &&
+	    ! (current_progress % 10)) {
+	    printf("%d...", current_progress);
+	    last_progress_printed = current_progress;
 	    fflush(stdout);
 	}
     }

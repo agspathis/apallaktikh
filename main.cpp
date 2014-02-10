@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
 	glutInitWindowPosition(0,0);
 
 	// Create and label the main window
-	glutCreateWindow("Course4");
+	glutCreateWindow("Voxelization-Simulation");
 
 	// Configure various properties of the OpenGL rendering context
 	setup();
@@ -49,6 +49,7 @@ int main(int argc, char* argv[])
 	glutKeyboardFunc(key_down);
 	glutKeyboardUpFunc(key_up);
 	glutMouseFunc(mouse);
+	// glutMouseWheelFunc(mouse_wheel);
 	glutMotionFunc(mouse_motion);
 
 	glutCreateMenu(menu);

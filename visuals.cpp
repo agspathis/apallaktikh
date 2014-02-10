@@ -132,13 +132,11 @@ void idle()
     if (ff_sim) {
 	ps = particle_system(vmodels[current_model_index()]);
 	ps.run(1000, 0);
-	printf("built simulation\n");
 	ff_sim = 0;
     }
     if (c_sim) {
 	ps = particle_system(vmodels[current_model_index()]);
 	ps.run(1000, 1);
-	printf("built simulation\n");
 	c_sim = 0;
     }
 

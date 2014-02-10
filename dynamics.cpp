@@ -12,10 +12,18 @@
 #include <GL/glut.h>
 #endif
 
+float jm = 0.02;		// jitter magnitude
+
+int rand_sign()
+{
+    if (rand() % 2) return 1;
+    else return -1;
+}
+
 particle::particle(float x, float y, float z)
 {
     pos = vector(x, y, z);
-    vel = vector();
+    vel = vector(jm*rand_sign(), 0, jm*rand_sign());
 }
 
 void particle::update(float dt, vector g)
@@ -67,7 +75,7 @@ particle_system::particle_system(vmodel vm)
     z_max = 1.1 * vm.aabb_max.z;
     
     g = vector(0, -1, 0);
-    dt = sqrt(pow(radius, 2)/(64*(x_max - x_min)));
+    dt = sqrt(pow(radius, 2)/(32*(x_max - x_min)));
 
 }
 
@@ -163,6 +171,19 @@ void particle_system::draw_frame()
 
 void particle_system::run(int iterations, int with_collisions)
 {
-    for (int i=0; i<iterations; i++)
+    int last_progress_printed = 0;
+    int current_progress;
+    
+    for (int i=0; i<iterations; i++) {
 	this->update(with_collisions);
+	
+	current_progress = i*100/iterations;
+	if (current_progress != last_progress_printed &&
+	    ! (current_progress % 10)) {
+	    printf("%d...", current_progress);
+	    last_progress_printed = current_progress;
+	    fflush(stdout);
+	}
+    }
+    printf("done\n");
 }
