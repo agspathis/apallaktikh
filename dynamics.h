@@ -20,6 +20,7 @@ class particle_system {
 public:
     vector g;
     float dt;
+    int ready;
     float radius;
     int current_frame;
     int max_frame_index;
@@ -30,9 +31,8 @@ public:
     particle_system();
     particle_system(vmodel);
     void store_frame();
-    void wall_hit(particle*);
+    void floor_hit(particle*);
     void update(int with_collisions);
-    void draw_frame();
-    // void draw_container();
+    void draw();
     void run(int iterations, int with_collisions);
 };

@@ -30,7 +30,8 @@ int view = 0;
 int c_sim = 0;
 int ff_sim = 0;
 int sim_pause = 0;
-int frame_step = 2;
+int sim_ready = 0;
+int frame_step = 1;
 
 void key_down(unsigned char key,int x,int y)
 {
@@ -81,14 +82,11 @@ void key_down(unsigned char key,int x,int y)
     case 'c':			// collision
 	c_sim = 1;
 	break;
-    case ' ':			// pause
-	sim_pause = !sim_pause;
-	break;
     case ',':			// rewind
-	frame_step -= 2;
+	frame_step -= 1;
 	break;
     case '.':			// fast forward
-	frame_step += 2;
+	frame_step += 1;
 	break;
 
     default : break;
@@ -112,17 +110,9 @@ void mouse(int button, int state, int x, int y)
 	    glutPostRedisplay();
 	}
 	break;
-    default : break;
-    }
-}
-
-void mouse_wheel(int wheel, int direction, int x, int y)
-{
-    printf("mouse_wheel called\n");
-    switch (direction) {
-    case -1 : distance += 5;
+    case 3 : distance -= 1;
 	break;
-    case 1 : distance -= 5;
+    case 4 : distance += 1;
 	break;
     default : break;
     }

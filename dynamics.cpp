@@ -32,7 +32,10 @@ void particle::update(float dt, vector g)
     vel += dt*g;
 }
 
-particle_system::particle_system() {}
+particle_system::particle_system()
+{
+    ready = 0;
+}
 
 void particle_system::store_frame()
 {
@@ -75,8 +78,9 @@ particle_system::particle_system(vmodel vm)
     z_max = 1.1 * vm.aabb_max.z;
     
     g = vector(0, -1, 0);
-    dt = sqrt(pow(radius, 2)/(32*(x_max - x_min)));
+    dt = sqrt(pow(radius, 2)/(8*(x_max - x_min)));
 
+    ready = 1;
 }
 
 void collision(particle* p1, particle* p2, float r)
@@ -109,7 +113,7 @@ void collision(particle* p1, particle* p2, float r)
     }
 }
 
-void particle_system::wall_hit(particle* p)
+void particle_system::floor_hit(particle* p)
 {
     vector pos = p->pos;
 
@@ -125,9 +129,9 @@ void particle_system::update(int with_collisions)
     for(int i = 0; i < particles.size(); i++)
 	particles[i].update(dt, g);
 
-    // wall hit handling
+    // floor hit handling
     for(int i = 0; i < particles.size(); i++)
-	wall_hit(&particles[i]);
+	floor_hit(&particles[i]);
 
     if (with_collisions) {
 
@@ -138,34 +142,36 @@ void particle_system::update(int with_collisions)
 	    }
 	}
 
-	// wall hit handling
+	// floor hit handling again
 	for(int i = 0; i < particles.size(); i++)
-	    wall_hit(&particles[i]);
+	    floor_hit(&particles[i]);
 
     }
 
     this->store_frame();
 }
 
-void particle_system::draw_frame()
+void particle_system::draw()
 {
-    std::vector<vector> frame = frames[current_frame];
+    if (ready) {
+	std::vector<vector> frame = frames[current_frame];
 
-    for (int i=0; i<frame.size(); i++) {
-	glPushMatrix();
-	glTranslatef(frame[i].i, frame[i].j, frame[i].k);
-	glutSolidSphere(radius, 8, 5);
-	glPopMatrix();
-    }
+	for (int i=0; i<frame.size(); i++) {
+	    glPushMatrix();
+	    glTranslatef(frame[i].i, frame[i].j, frame[i].k);
+	    glutSolidSphere(radius, 8, 5);
+	    glPopMatrix();
+	}
 
-    current_frame += frame_step;
+	current_frame += frame_step;
     
-    // clamp to range 0 .. frames.size()-1
-    if (current_frame < 0)
-	current_frame = 0;
+	// clamp to range 0 .. frames.size()-1
+	if (current_frame < 0)
+	    current_frame = 0;
 
-    if (current_frame > (frames.size()-1))
-	current_frame = frames.size()-1;
+	if (current_frame > (frames.size()-1))
+	    current_frame = frames.size()-1;
+    }
 }
 
 
@@ -185,5 +191,5 @@ void particle_system::run(int iterations, int with_collisions)
 	    fflush(stdout);
 	}
     }
-    printf("done\n");
+    printf("\nsimulation ready\n\n");
 }

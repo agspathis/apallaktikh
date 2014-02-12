@@ -62,7 +62,9 @@ void render()
     case 1 :
 	gluLookAt(0, 0, distance, 0, 0, 0, 0, 1, 0);
 	apply_rt(rt);
+	glDisable(GL_TEXTURE_2D);
 	vmodels[render_index].draw(VELEM_CUBE, mode);
+	glDisable(GL_TEXTURE_2D);
 	break;
     case 2 :
 	gluLookAt(0, 0, distance, 0, 0, 0, 0, 1, 0);
@@ -80,12 +82,16 @@ void render()
     case 5 :
 	gluLookAt(0, 0, distance, 0, 0, 0, 0, 1, 0);
 	apply_rt(rt);
+	glDisable(GL_TEXTURE_2D);
 	vmodels[render_index].draw(VELEM_SPHERE, mode);
+	glEnable(GL_TEXTURE_2D);
 	break;
     case 6 :
 	gluLookAt(0, 0, distance, 0, 0, 0, 0, 1, 0);
 	apply_rt(rt);
-	ps.draw_frame();
+	glDisable(GL_TEXTURE_2D);
+	ps.draw();
+	glEnable(GL_TEXTURE_2D);
 	break;
 
     default : break;
@@ -106,9 +112,6 @@ void resize(int w, int h)
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    //         L	   R	  B	T	 N	   F
-    //glOrtho(-100.0, 100.0, -100.0, 100.0, 100.0, -100.0);
-    //glFrustum(-100.0, 100.0, -100.0, 100.0, 1, 40.0);
     float window_ratio = ((float)w)/h;
     gluPerspective(30.0, window_ratio, 1.0, 1000);
 }
@@ -131,7 +134,7 @@ void idle()
 
     if (ff_sim) {
 	ps = particle_system(vmodels[current_model_index()]);
-	ps.run(1000, 0);
+	ps.run(500, 0);
 	ff_sim = 0;
     }
     if (c_sim) {
