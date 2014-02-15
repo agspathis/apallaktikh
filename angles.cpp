@@ -7,6 +7,7 @@
 // #include <algorithm>
 
 #include "model.h"
+#include "controls.h"
 
 #ifdef _WIN32
 #include "gl/glut.h"
@@ -66,12 +67,10 @@ void prepare_angle_histogram(float w, float h)
 
 
     // horizontal axis labeling
-
     const char* hlabels[10] =
 	{"0", "20", "40", "60", "80", "100", "120", "140", "160", "180"};
 
     // 10 subdivisions on horizontal axis (9*20 = 180 deg)
-
     glPushMatrix();
     glTranslatef(-w, -1.1*h, 0);
     for (int i=0; i<10; i++) {
@@ -93,11 +92,9 @@ void prepare_angle_histogram(float w, float h)
     glPopMatrix();
 
     // vertical axis labeling
-
     const char* vlabels[6] = {"0.0", "0.2", "0.4", "0.6", "0.8", "1.0"};
 
     // 6 subdivisions on vertical axis (5*0.2 = 1.0 freq)
-
     glPushMatrix();
     glTranslatef(-1.2*w, -h, 0);
     for (int i=0; i<6; i++) {
@@ -130,14 +127,10 @@ void model::histogram()
     float w = 10; float h = 5;
 
     // store number of angles (rounded)
-
     std::vector<float> angle_count = std::vector<float> (181, 0);
 
     for (int i=0; i<angles.size(); i++) 
 	angle_count[(int) (angles[i]+0.5)]++;
-
-    // for (int i=0; i<181; i++)
-    // 	printf("%d:%d\n", i, angle_count[i]);
 
     float max_count = 0;
     for (int i=0; i<181; i++)
@@ -157,7 +150,7 @@ void model::histogram()
     }
     glPopMatrix();
         
-    glEnable(GL_TEXTURE_2D);
+    if (texture_enabled) glEnable(GL_TEXTURE_2D);
     glEnable(GL_LIGHTING);
     glPopAttrib();
 }

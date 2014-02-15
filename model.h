@@ -12,7 +12,7 @@ public:
 public:
     vertex();
     vertex(float, float, float);
-	inline vertex operator -= (vertex v)
+    inline vertex operator -= (vertex v)
     {
 	x -= v.x;
 	y -= v.y;
@@ -113,11 +113,11 @@ inline vector operator % (const vector& u, const vector& v)
 
 class face {
 public:
-	int vi0, vi1, vi2;
-	vector n;
+    int vi0, vi1, vi2;
+    vector n;
 public:
-	face();
-	face(int, int, int);
+    face();
+    face(int, int, int);
 };
 
 
@@ -127,26 +127,26 @@ class vmodel; /* forward declaration */
 
 class model {
 public:
-	float dist;
-	vertex aabb_min, aabb_max;
-	std::vector<vertex> vertices;
-	std::vector<face> faces;
-	std::vector<vector> vnormals;
-	std::vector<vector> fnormals;
-	std::vector<float> angles;
+    float dist;
+    vertex aabb_min, aabb_max;
+    std::vector<vertex> vertices;
+    std::vector<face> faces;
+    std::vector<vector> vnormals;
+    std::vector<vector> fnormals;
+    std::vector<float> angles;
 public:
-	model();
-	model(const char*);
-	model(vmodel);
-	void center();
-	void face_normals();
-	void vertex_normals();
-	void compute_angles();
-	void compact();
-	void draw(int);
-	void histogram();
-	float distance(const model);
-	void debug();
+    model();
+    model(const char*);
+    model(vmodel);
+    void center();
+    void face_normals();
+    void vertex_normals();
+    void compute_angles();
+    void compact();
+    void draw(int);
+    void histogram();
+    float distance(const model);
+    void debug();
 };
 
 #endif

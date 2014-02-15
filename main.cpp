@@ -17,49 +17,48 @@
 
 int main(int argc, char* argv[])
 {
-	// initialize GLUT library state
-	glutInit(&argc, argv);
+    // initialize GLUT library state
+    glutInit(&argc, argv);
 
-	// Set up the display using the GLUT functions to
-	// get rid of the window setup details:
-	// - Use true RGB colour mode ( and transparency )
-	// - Enable double buffering for faster window update
-	// - Allocate a Depth-Buffer in the system memory or
-	//   in the video memory if 3D acceleration available
-	glutInitDisplayMode(GLUT_RGBA|GLUT_DEPTH|GLUT_DOUBLE);
+    // Set up the display using the GLUT functions to
+    // get rid of the window setup details:
+    // - Use true RGB colour mode ( and transparency )
+    // - Enable double buffering for faster window update
+    // - Allocate a Depth-Buffer in the system memory or
+    //   in the video memory if 3D acceleration available
+    glutInitDisplayMode(GLUT_RGBA|GLUT_DEPTH|GLUT_DOUBLE);
 
 
-	// Define the main window size and initial position
-	// ( upper left corner, boundaries included )
-	glutInitWindowSize(1600,1000);
-	glutInitWindowPosition(0,0);
+    // Define the main window size and initial position
+    // (upper left corner, boundaries included)
+    glutInitWindowSize(1600,1000);
+    glutInitWindowPosition(0,0);
 
-	// Create and label the main window
-	glutCreateWindow("Voxelization-Simulation");
+    // Create and label the main window
+    glutCreateWindow("Voxelization-Simulation");
 
-	// Configure various properties of the OpenGL rendering context
-	setup();
+    // Configure various properties of the OpenGL rendering context
+    setup();
 
-	// Callbacks for the GL and GLUT events:
+    // Callbacks for the GL and GLUT events:
 
-	// The rendering function
-	glutDisplayFunc(render);
-	glutReshapeFunc(resize);
-	glutIdleFunc(idle);
-	glutKeyboardFunc(key_down);
-	glutKeyboardUpFunc(key_up);
-	glutMouseFunc(mouse);
-	// glutMouseWheelFunc(mouse_wheel);
-	glutMotionFunc(mouse_motion);
+    // The rendering function
+    glutDisplayFunc(render);
+    glutReshapeFunc(resize);
+    glutIdleFunc(idle);
+    glutKeyboardFunc(key_down);
+    glutKeyboardUpFunc(key_up);
+    glutMouseFunc(mouse);
+    glutMotionFunc(mouse_motion);
 
-	glutCreateMenu(menu);
-	glutAddMenuEntry("wire", WIRE);
-	glutAddMenuEntry("solid", SOLID);
+    glutCreateMenu(menu);
+    glutAddMenuEntry("wire", WIRE);
+    glutAddMenuEntry("solid", SOLID);
 
-	// attach the menu to the right button
-	glutAttachMenu(GLUT_RIGHT_BUTTON);
+    // attach the menu to the right button
+    glutAttachMenu(GLUT_RIGHT_BUTTON);
 
-	//Enter main event handling loop
-	glutMainLoop();
-	return 0;
+    //Enter main event handling loop
+    glutMainLoop();
+    return 0;
 }

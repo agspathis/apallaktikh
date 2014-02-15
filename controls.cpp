@@ -37,7 +37,7 @@ void key_down(unsigned char key,int x,int y)
 {
     switch(key)
     {
-    case 27 : exit(0);			// escape
+    case 27 : exit(0);		// escape
 	break;
 
     case '-' : distance += 1;

@@ -41,6 +41,12 @@ int current_model_index()
     else return vres/vres_step-1;
 }
 
+void check_texture()
+{
+    if (texture_enabled) glEnable(GL_TEXTURE_2D);
+    else glDisable(GL_TEXTURE_2D);
+}
+
 void render()
 {
     // Clean up the colour of the window and the depth bufferp
@@ -55,6 +61,7 @@ void render()
 
     switch (view) {
     case 0 :
+	check_texture();
 	gluLookAt(0, 0, distance, 0, 0, 0, 0, 1, 0);
 	apply_rt(rt);
 	master_model.draw(mode);
@@ -64,11 +71,12 @@ void render()
 	apply_rt(rt);
 	glDisable(GL_TEXTURE_2D);
 	vmodels[render_index].draw(VELEM_CUBE, mode);
-	glDisable(GL_TEXTURE_2D);
+	check_texture();
 	break;
     case 2 :
 	gluLookAt(0, 0, distance, 0, 0, 0, 0, 1, 0);
 	apply_rt(rt);
+	check_texture();
 	rmodels[render_index].draw(mode);
 	break;
     case 3 :
@@ -84,14 +92,14 @@ void render()
 	apply_rt(rt);
 	glDisable(GL_TEXTURE_2D);
 	vmodels[render_index].draw(VELEM_SPHERE, mode);
-	glEnable(GL_TEXTURE_2D);
+	check_texture();
 	break;
     case 6 :
 	gluLookAt(0, 0, distance, 0, 0, 0, 0, 1, 0);
 	apply_rt(rt);
 	glDisable(GL_TEXTURE_2D);
 	ps.draw();
-	glEnable(GL_TEXTURE_2D);
+	check_texture();
 	break;
 
     default : break;

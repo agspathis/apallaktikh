@@ -10,7 +10,6 @@
 #include "visuals.h"
 #include "controls.h"
 #include "texture.h"
-#include "mcubes.h"
 #include "mclut.h"
 
 #ifdef _WIN32

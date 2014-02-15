@@ -2,15 +2,16 @@
 #define WIRE 0
 #define SOLID 1
 
-struct rt {					// rotation-translation
-	float rx, ry, rz;
-	float tx, ty, tz;
+struct rt {			// rotation-translation
+    float rx, ry, rz;
+    float tx, ty, tz;
 };
 
 extern struct rt rt;
 extern int mode;
 extern int view;
 extern float distance;
+extern int texture_enabled;
 extern int vres;
 extern int vres_step;
 
