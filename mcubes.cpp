@@ -27,11 +27,11 @@
 // recursively with the appropriate voxel as base, and the
 // corresponding edge index with respect to the new base
 
-int vmodel::global_vi(int i, int j, int k, int e)
+int vmodel::global_vi(int i, int j, int k, int edge)
 {
     int base = 3*(i*y*z + j*z + k);
-	
-    switch(e) {
+
+    switch(edge) {
 		
     case 8: return base;
     case 3: return base+1;

@@ -78,7 +78,7 @@ particle_system::particle_system(vmodel vm)
     z_max = 1.1 * vm.aabb_max.z;
     
     g = vector(0, -1, 0);
-    dt = sqrt(pow(radius, 2)/(8*(x_max - x_min)));
+    dt = radius / (2*sqrt(2*(y_max - y_min)));
 
     ready = 1;
 }
